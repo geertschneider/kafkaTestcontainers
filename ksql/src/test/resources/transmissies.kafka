@@ -1,0 +1,165 @@
+PRODUCER keyed-message
+topic: Axon.IntegrationEvents
+key: transmissie
+{
+  "eventIdentifier":"6a8506-e15e-4d0f-aab2-bdba21ff6m",
+    "eventType":"transmissie/TransmissieOpgestart",
+    "revision":"1",
+     "timestamp":"2019-11-30T14:15:15.771Z",
+     "payload": {
+        "creationTimestamp": "2020-01-28T16:20:12.333Z",
+        "ikl": 8888,
+        "context": "OPVOLGING_SERVICELIJN",
+        "transmissieId": 6666,
+        "transmissieType": "NTINAA",
+        "transmissieOmschrijving": "Niet-ingaan op aangetekende afspraak",
+        "opgestartOp": "2020-01-28T16:20:12.073Z",
+        "gebruikerUid": "GHUYSKEN,INTERN",
+        "redenAfwezigheid": "reden",
+        "externeAfspraakReferentie": "e97540fb-9ef8-4d43-9b2b-25b165da475d"
+    }
+}
+###
+PRODUCER keyed-message
+topic: Axon.IntegrationEvents
+key: transmissie
+{
+   "eventIdentifier":"6b188506-e15e-4d0f-aab2-bdba21ff6ab5",
+    "eventType":"transmissie/TransmissieVerstuurd",
+    "revision":"1",
+     "timestamp":"2020-02-01T11:20:12.333Z",
+"payload":
+{
+    "werkzoekende": {
+        "contactGegevens": {
+            "gsm": "CAEVI9UaLxoQvOw+OhTwuhyyQ+lEWVt3AyGnRQ3fgWpaWimQPQhN+P/DozIMKzMyNDk4MTIyMjI2",
+            "officieelAdres": {
+                "busNummer": "CAEVMGbx4BoQsK4DODn2KTF28f+P2pDoJSGEjY5VJW4miynZAbxgMECR6DIBQQ==",
+                "straat": "CAEVp8EQqxoQXMKGR1qBicOsUEoU+qVfuCHmzyCawe2OYCm9Wcu4eCISvjIPR3JvdGUgYmFhbihtZWwp",
+                "gemeenteRCode": 2482,
+                "huisNummer": "CAEVtTDVYBoQ6mt8f3T9lQxFyhUfCAatWyFg9ufdTiXXCikijBeOEdRLnDIBMQ==",
+                "landCode": "BE",
+                "postCode": "CAEVwtoY0hoQsKRaJh0Y9EVf7qUTjbgMMyFyzWUyuS3/qimJyp6+kxRd0zIGVkwsNzQ5",
+                "straatRCode": 125732,
+                "gemeente": "CAEV4mNs8xoQJAk1aiqWAFmxms6qFnEdmSFuR2O0rdNF8SnQBX0KNC0u3DIGVkwsNzMz"
+            },
+            "verblijfsAdres": {
+                "busNummer": "CAEVMrFaoxoQk4CFTrY6ms3i60cENh74ZyGUS0WnVd+wayldlGHYLUOGWTIBQQ==",
+                "straat": "CAEVoDXv3BoQNZLvLUY52NAlB1YMNG+SAyFz3S3n16ZrICn7g/qtNxcgCjIQQmVyaW5nZXJzdGVlbndlZw==",
+                "gemeenteRCode": 2482,
+                "huisNummer": "CAEVZ4syPxoQq0s9ltP8QT5bDQvn91bRHyFTlUyJGbRBFCkofuvs23gxvzIBMQ==",
+                "landCode": "BE",
+                "postCode": "CAEVpL1XWRoQa7nmjG0IVcaLjLcvY4rF4CG+rk3FEeH+2inxMH9C5m3cgDIHVkwsMTAxMA==",
+                "straatRCode": 125732,
+                "gemeente": "CAEV0CfbrRoQLjTuLrMYaTiphQgKpfjJTiEja32mUMu6USlaiOGlmCBLETIGVkwsMjAx"
+            }
+        },
+        "rijksregisternummer": "CAEVucUplxoQzPWs2tT3NODimpVoNa/UGiGEdd+TXBBhNCnw+LIQOEmUIDILNzAxMTE0ODE2MjA=",
+        "ikl": 13854,
+        "persoonsGegevens": {
+            "voorNaam": "CAEVbMbG4xoQP5fiZXqf+kLbp/CnfeSIciECjCNZ8Uy5jikfFPnko8LbHTIGQW5nZWxv",
+            "naam": "CAEVG/x3ihoQ3oQ4Qn9i/Ic1gevoY7T1qCGB9S6MyamAEyl9cqC4pkI+5DIHUGVlbG1hbg==",
+            "geboorteDatum": "CAEVwFV+jhoQ1cvcRgsyIP7znDcOB04c8SG/ljDdo7ex4iksqShMoEovsjIIMTk3MDExMTQ=",
+            "geslacht": "V"
+        },
+        "werksituatie": {
+            "omschrijving": "Uitgeschreven wegens ziekte",
+            "code": 76
+        }
+    },
+    "bemiddelaar": {
+        "uid": "TLUKACS,INTERN",
+        "naam": "Lukacs",
+        "organisatie": 1
+    },
+    "creationTimestamp": "2020-02-25T11:40:35.007Z",
+    "digitaleBundel": [
+        {
+            "extension": "pdf",
+            "bestandsNaam": "CAEVfBPaRhog0Pf+Dgwl1wTblTdsCgOnNpm9GJ3zaENxuJ+VP2cjaFIhaV8tws8Sp+UpWlVAaVzMzyMyEDZQZUI3VzkgMHlyMyBZTHg=",
+            "documentCategorie": "BRIEF",
+            "uri": "3c32e783-be55-44ed-8f09-d3a1eec64080"
+        },
+        {
+            "extension": "pdf",
+            "bestandsNaam": "CAEVdELSYRogyhcsS4jlo4NuQI6G3cOs1I1ekWFNwzOHIWEymhYkxhUhD0emPYcbYY4p6lulLxaeccQyF1hyMGdwWEogSEU2bVZrcU1mQndXSFhM",
+            "documentCategorie": "TRANSMISSIE_BRIEF",
+            "uri": "af3586bf-f315-4155-bc5d-0b64a629ebca"
+        },
+        {
+            "extension": "pdf",
+            "bestandsNaam": "CAEVh3UvzxogPL1+a/t+PLSDFipDCNsoIK0wpkgrw6lydNBu9v/AeochJvI5gghFDAYpvJht8G9LyAwyHmJGRDVBZFhBVVYgelBUNCBTZ1M1ZmdkMzhzY24gOQ==",
+            "documentCategorie": "DOSSIERPRINT",
+            "uri": "8f69e9c3-6456-4111-ae95-31da9e0d2be4"
+        }
+    ],
+    "afgewerktDoor": "TLUKACS,INTERN",
+    "ikl": 666,
+    "transmissieInformatie": {
+        "datumVerzonden": "2020-02-25",
+        "ondertekend": false,
+        "redenAfwezigheid": "reden afwezigheid",
+        "transmissieId": 1404,
+        "type": {
+            "omschrijving": "Niet-ingaan op aangetekende afspraak",
+            "code": "NTINAA"
+        },
+        "motivatie": "CAEVmCaiYBogplWBGsp4laaBZc2QvhX2evdog9tTuvZ101UMyUey20QhZItTCncQxZsp3cBc1RUiGNEyEzIgekFvbUg1dWdsbTMgWER6SWQ="
+    }
+}
+}
+###
+PRODUCER keyed-message
+topic: Axon.IntegrationEvents
+key: beslissingcontroledossier
+{
+   "eventIdentifier":"6c188506-e15e-4d0f-aab2-bdba21ff6ab5",
+    "eventType":"controledossier/transmissieBeslist",
+    "revision":"1",
+     "timestamp":"2020-02-07T11:20:12.333Z",
+"payload":
+{
+    "bemiddelaar": "TLUKACS,INTERN",
+    "creationTimestamp": "2020-01-30T11:20:12.073Z",
+    "beslissing": {
+        "werkzoekende": {
+            "rijksregisternummer": "CAEVHJhCKhoQ1u0pp8RcrD5llr7z5Xs58iEQGeCL1eJauyk2RcIO2hwaTTILNzAxMTE0ODE2MjA=",
+            "klantnummer": 13854
+        },
+        "beslissingsType": "ORIGINEEL",
+        "beslissingslijnen": [
+            {
+                "omschrijving": "u verliest uw uitkering voor een periode van 10 weken.",
+                "beslissingType": "NTINAASANCTIEONMIDDELLIJK",
+                "beslissingSoort": "GEWONEBESLISSING",
+                "sanctiemaat": 10,
+                "motivatie": "CAEVxsiOhhogdzCDJ8eCltg0ujLFBS89sECr8UnllqUIjYGPTdibGgUhmSyBAedEo38pAxygleBmUEgyGFl4S1Z4RWx3M2p4b0o4SSBhIEh2IGxONg=="
+            },
+            {
+                "omschrijving": "Onbeschikbaarheid van 01 januari 2020 tot 31 januari 2020",
+                "beslissingType": "NTINAAONBESCHIKBAARHEID",
+                "beslissingSoort": "EXTRABESLISSING",
+                "startDatumBeslissing": "2020-01-01",
+                "motivatie": "CAEVYpgz2RogY8csF0GI1zXOVEJrM0uvhQ7yqskZIA8ci6Fnd4aI0LwhImgpY1w0X4EpZtS6JytaTaEyEVhuWjRoNlUgSiBJeiAgT3pN",
+                "eindDatumBeslissing": "2020-01-31"
+            },
+            {
+                "omschrijving": "Niet inschrijving als werkzoekende van 01 februari 2020",
+                "beslissingType": "NTINAANIETINSCHRIJVINGWZ",
+                "beslissingSoort": "EXTRABESLISSING",
+                "startDatumBeslissing": "2020-02-01",
+                "motivatie": "CAEVArR2Dxog2+KL2lHObPXKvDPH5C7uUpTrwR2yot+3W8W8QyBTLFwhZXuTTl5dRD8pv0np9ZiUjkkyEW9jekgyQ3FVUGIgcTUxMlpI"
+            }
+        ],
+        "beslissingsnemerId": "VDABCOR1,INTERN",
+        "beslissingsdatum": "2020-02-25",
+        "team": "WEST",
+        "transmissie": {
+            "id": 12345,
+            "type": "NTINAA"
+        }
+    },
+    "ikl": 666,
+    "transmissieId": 12345
+}
+}

@@ -1,0 +1,64 @@
+[
+{
+    "EventIdentifier": "yeeeb615-7629-409d-93f7-386807pp",
+    "eventtype": "inos/InschattingsGesprekAlsAfspraakGepland",
+    "revision": 1,
+    "timestamp": "2020-02-25T14:53:17.000Z",
+    "payload": {
+        "van": "12:00:00",
+        "tot": "17:00:00",
+        "onderwerp": "Herinnering: Bel ons op u00270800 30 700u0027",
+        "ikl": 10000,
+        "inschattingsGesprekId": "28e31c85-3099-4983-80b2-aed2759a6999",
+        "deadline": "2020-03-04",
+        "eersteInschattingId": "c95bf7c0-0a93-4c00-8de9-0b3511aaa81c"
+    }
+}
+,
+{
+    "EventIdentifier": "eeeeb615-7629-409d-93f7-386807pp",
+    "eventtype": "inos/InschattingsGesprekAlsAfspraakAfwezigAfgewerkt",
+    "revision": 1,
+    "timestamp": "2020-03-01T14:54:14.000Z",
+    "payload": {
+        "ikl": 455999,
+        "inschattingsGesprekId": "28e31c85-3099-4983-80b2-aed2759a6999",
+        "eersteInschattingId": "c95bf7c0-0a93-4c00-8de9-0b3511aaa81c",
+        "reden": {
+            "omschrijving": "Onbereikt",
+            "code": "ONBEREIKT"
+        }
+    }
+}
+,{
+    "EventIdentifier": "bf6019fb-c555-4e86-bc18-7426b9f1556c",
+    "eventtype": "inos/OpvolgGesprekAlsAfspraakAfwezigAfgewerkt",
+    "revision": 1,
+    "timestamp": "2020-02-26T07:45:12.000Z",
+    "payload": {
+        "opvolgGesprekId": "83515c1a-ee8d-4441-9c53-13bfdfcd7b8d",
+        "ikl": 80014,
+        "opvolgingId": "098eff86-94b5-48ae-8460-cb3a1746a448",
+        "reden": {
+            "omschrijving": "Verlof",
+            "code": "VERLOF"
+        }
+    }
+}
+,
+{
+    "EventIdentifier": "feeeb615-7629-409d-93f7-386807pp",
+    "eventtype": "inos/InschattingsGesprekAlsAfspraakGepland",
+    "revision": 1,
+    "timestamp": "2020-02-25T14:53:17.000Z",
+    "payload": {
+        "van": "",
+        "tot": "",
+        "onderwerp": "Herinnering: Bel ons op u00270800 30 700u0027",
+        "ikl": 10000,
+        "inschattingsGesprekId": "88e31c85-3099-4983-80b2-aed2759a6999",
+        "deadline": "2020-03-04",
+        "eersteInschattingId": "d95bf7c0-0a93-4c00-8de9-0b3511aaa81c"
+    }
+}
+]

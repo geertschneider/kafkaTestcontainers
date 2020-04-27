@@ -80,6 +80,32 @@ with (
 );
 
 create table TBL_TRANSMISSIEEVENTS
+(
+    eventIdentifier string,
+    eventType string,
+    transmissieIdKey string,
+    TransmissieID int,
+    IKL int,
+    TransmissieType string,
+    Toestand string,
+    Motivatie string,
+    OpgestartOp bigint,
+    ContactID string,
+    Ondertekend int,
+    UITVOERDER string,
+    TIJDSTIP bigint,
+    BESLISSING string,
+    SANCTIEMAAT string,
+    REDEN string,
+    BESLISSINGSMOTIVATIE string,
+    BESLISSINGSDATUM bigint,
+    VERHOORDER string,
+    BeslissingsLijnen string,
+    DTM_CRE bigint,
+    USR_CRE string,
+    DTM_LW bigint,
+    USR_LW string
+)
 WITH (VALUE_FORMAT='AVRO',KAFKA_TOPIC='OUT_TRANSMISSIEEVENTS',key='transmissieIdKey',PARTITIONS=6);
 
 insert into STR_NEWTRANSMISSIEEVENTS

@@ -22,8 +22,8 @@ def KafkaProducer<String, String> createKafkaProducer() {
 }
 
 def kafkaProducer = createKafkaProducer()
-
-def jsonLines =  new File("C:\\Code\\kafkaTestcontainers\\ksql\\src\\test\\resources\\INOS testtrajecten 20200424.json").text
+String pathToLoad ="C:\\Code\\kafkaTestcontainers\\ksql\\src\\test\\resources\\afspraken.kafka"
+def jsonLines =  new File(pathToLoad).text
 def slurper = new JsonSlurper()
 def json= slurper.parseText(jsonLines)
 
