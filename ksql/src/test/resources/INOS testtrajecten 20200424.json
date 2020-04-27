@@ -1,0 +1,159 @@
+[
+{
+"eventIdentifier":"EventIdentifier1",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-01T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-01","ikl":1 ,"eersteInschattingId":"eersteInschattingId1"}
+},
+{
+"eventIdentifier":"EventIdentifier2",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-01T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-01","ikl":2 ,"eersteInschattingId":"eersteInschattingId2"}
+},
+{
+"eventIdentifier":"EventIdentifier3",
+"eventType":"inos/InschattingGepauzeerd",
+"revision":"1",
+"timestamp":"2020-01-04T00:00:00.000Z",
+"payload": {"omschrijving":"Pauze","datumSinds":"2020-01-04","ikl":2 ,"eersteInschattingId":"eersteInschattingId2"}
+},
+{
+"eventIdentifier":"EventIdentifier4",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-01T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-01","ikl":3 ,"eersteInschattingId":"eersteInschattingId3"}
+},{
+"eventIdentifier":"EventIdentifier5",
+"eventType":"inos/InschattingGepauzeerd",
+"revision":"1",
+"timestamp":"2020-01-04T00:00:00.000Z",
+"payload": {"omschrijving":"Pauze","datumSinds":"2020-01-04","ikl":3 ,"eersteInschattingId":"eersteInschattingId3"}
+},
+{
+"eventIdentifier":"EventIdentifier6",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-07T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-07","ikl":3 ,"eersteInschattingId":"eersteInschattingId3"}
+},{
+"eventIdentifier":"EventIdentifier7",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-01T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-01","ikl":4 ,"eersteInschattingId":"eersteInschattingId4"}
+},{
+"eventIdentifier":"EventIdentifier8",
+"eventType":"inos/InschattingGepauzeerd",
+"revision":"1",
+"timestamp":"2020-01-04T00:00:00.000Z",
+"payload": {"omschrijving":"Pauze","datumSinds":"2020-01-04","ikl":4 ,"eersteInschattingId":"eersteInschattingId4"}
+},
+{
+"eventIdentifier":"EventIdentifier9",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-07T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-07","ikl":4 ,"eersteInschattingId":"eersteInschattingId4"}
+},{
+"eventIdentifier":"EventIdentifier10",
+"eventType":"inos/InschattingGepauzeerd",
+"revision":"1",
+"timestamp":"2020-01-15T00:00:00.000Z",
+"payload": {"omschrijving":"Pauze","datumSinds":"2020-01-15","ikl":4 ,"eersteInschattingId":"eersteInschattingId4"}
+},
+{
+"eventIdentifier":"EventIdentifier11",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-01T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-01","ikl":5 ,"eersteInschattingId":"eersteInschattingId5"}
+},{
+"eventIdentifier":"EventIdentifier12",
+"eventType":"inos/InschattingGepauzeerd",
+"revision":"1",
+"timestamp":"2020-01-04T00:00:00.000Z",
+"payload": {"omschrijving":"Pauze","datumSinds":"2020-01-04","ikl":5 ,"eersteInschattingId":"eersteInschattingId5"}
+},
+{
+"eventIdentifier":"EventIdentifier13",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-07T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-07","ikl":5 ,"eersteInschattingId":"eersteInschattingId5"}
+},{
+"eventIdentifier":"EventIdentifier14",
+"eventType":"inos/InschattingGepauzeerd",
+"revision":"1",
+"timestamp":"2020-02-11T00:00:00.000Z",
+"payload": {"omschrijving":"Pauze","datumSinds":"2020-02-11","ikl":5 ,"eersteInschattingId":"eersteInschattingId5"}
+},
+{
+"eventIdentifier":"EventIdentifier15",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-01T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-01","ikl":6 ,"eersteInschattingId":"eersteInschattingId6"}
+},{
+"eventIdentifier":"EventIdentifier16",
+"eventType":"inos/InschattingGepauzeerd",
+"revision":"1",
+"timestamp":"2020-01-04T00:00:00.000Z",
+"payload": {"omschrijving":"Pauze","datumSinds":"2020-01-04","ikl":6 ,"eersteInschattingId":"eersteInschattingId6"}
+},
+{
+"eventIdentifier":"EventIdentifier17",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-07T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-07","ikl":6 ,"eersteInschattingId":"eersteInschattingId6"}
+},{
+"eventIdentifier":"EventIdentifier18",
+"eventType":"inos/InschattingGepauzeerd",
+"revision":"1",
+"timestamp":"2020-02-11T00:00:00.000Z",
+"payload": {"omschrijving":"Pauze","datumSinds":"2020-02-11","ikl":6 ,"eersteInschattingId":"eersteInschattingId6"}
+},
+{
+"eventIdentifier":"EventIdentifier19",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-02-19T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-02-19","ikl":6 ,"eersteInschattingId":"eersteInschattingId6"}
+},{
+"eventIdentifier":"EventIdentifier20",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-01T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-01","ikl":7 ,"eersteInschattingId":"eersteInschattingId7"}
+},{
+"eventIdentifier":"EventIdentifier21",
+"eventType":"inos/InschattingGepauzeerd",
+"revision":"1",
+"timestamp":"2020-01-04T00:00:00.000Z",
+"payload": {"omschrijving":"Pauze","datumSinds":"2020-01-04","ikl":7 ,"eersteInschattingId":"eersteInschattingId7"}
+},
+{
+"eventIdentifier":"EventIdentifier22",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-07T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-07","ikl":7 ,"eersteInschattingId":"eersteInschattingId7"}
+},{
+"eventIdentifier":"EventIdentifier23",
+"eventType":"inos/InschattingGepauzeerd",
+"revision":"1",
+"timestamp":"2020-01-15T00:00:00.000Z",
+"payload": {"omschrijving":"Pauze","datumSinds":"2020-01-15","ikl":7 ,"eersteInschattingId":"eersteInschattingId7"}
+},
+{
+"eventIdentifier":"EventIdentifier24",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-25T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-25","ikl":7 ,"eersteInschattingId":"eersteInschattingId7"}
+}
+]

@@ -1,0 +1,26 @@
+plugins {
+    id 'groovy'
+    id 'com.avast.gradle.docker-compose' version "0.10.10"
+    id 'com.redpillanalytics.gradle-analytics' version "1.2.3"
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:3.0.3'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.6.2'
+    testImplementation "org.testcontainers:junit-jupiter:1.14.1"
+    testImplementation 'org.testcontainers:kafka:1.14.1'
+
+    testImplementation group: 'org.apache.kafka', name: 'kafka-clients', version: '2.5.0'
+    testImplementation group:'org.apache.kafka', name: 'kafka_2.13', version: '2.5.0'
+
+}
