@@ -1,0 +1,24 @@
+plugins {
+    id 'groovy'
+    id 'com.adarshr.test-logger' version '2.0.0'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://packages.confluent.io/maven/"
+    }
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:3.0.3'
+
+    compile 'org.slf4j:slf4j-simple:+'
+    compile 'io.confluent.ksql:ksql-udf:5.4.1'
+
+
+
+}

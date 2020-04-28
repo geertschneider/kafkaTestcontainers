@@ -1,0 +1,15 @@
+create stream STR_INOSEVENTS
+WITH (value_format='AVRO') AS
+select
+    extractjsonfield(payload,'$.ikl') IKL,
+    eventIdentifier,
+    eventType,
+    substring(eventType,6) as eventName,
+    eventTime as startDate,
+    STRINGTOTIMESTAMP('9999-12-31T23:59:59.999Z','yyyy-MM-dd''T''HH:mm:ss.SSSX') as endDate
+from STR_INTEGRATIONEVENTS_AVRO
+where rowkey='inos'
+partition by IKL;
+
+
+

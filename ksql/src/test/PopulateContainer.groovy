@@ -22,14 +22,17 @@ def KafkaProducer<String, String> createKafkaProducer() {
 }
 
 def kafkaProducer = createKafkaProducer()
-String pathToLoad ="C:\\Code\\kafkaTestcontainers\\ksql\\src\\test\\resources\\afspraken.kafka"
+//String pathToLoad ="C:\\Code\\kafkaTestcontainers\\ksql\\src\\test\\resources\\afspraken.kafka"
+String pathToLoad ="C:\\Code\\kafkaTestcontainers\\ksql\\src\\test\\resources\\INOS testtrajecten.json"
 def jsonLines =  new File(pathToLoad).text
 def slurper = new JsonSlurper()
 def json= slurper.parseText(jsonLines)
 
 
 json.each { event ->
-    kafkaProducer.send( new ProducerRecord<String, String>("Axon.IntegrationEvents", JsonOutput.toJson(event)) )
+    ProducerRecord<String,String> producerRecord= new ProducerRecord<String, String>("Axon.IntegrationEvents",event.eventType.take(4), JsonOutput.toJson(event))
+    kafkaProducer.send( producerRecord )
+    println("inserted ${producerRecord.key} - ${producerRecord.value}")
 }
 
 

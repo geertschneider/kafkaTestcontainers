@@ -1,3 +1,4 @@
 rootProject.name = 'kafkaTestcontainers'
 include 'ksql'
+include 'ksql-functions'
 
