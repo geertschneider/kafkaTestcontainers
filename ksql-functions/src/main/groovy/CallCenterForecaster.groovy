@@ -1,41 +1,48 @@
+import groovy.json.JsonOutput
 import groovy.util.logging.Slf4j
+import io.confluent.ksql.function.udf.Udf
 import io.confluent.ksql.function.udf.UdfDescription
 
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneOffset
 
 
 @Slf4j
 @UdfDescription(
         name = "Calculate forecast",
-        description = """Calculate the forecast based on the incoming event.""")
+        description = "Calculate the forecast based on the incoming event.")
 class CallCenterForecaster {
 
-    def createEmptyForecast(){
-        return [Affected:false,IG:null,OG1:null,OG2:null]
-    }
 
-    public static AbstractForecastPredictor GetForecastPredictor(String event,LocalDateTime eventTime){
+    def static AbstractForecastPredictor GetForecastPredictor(String event, LocalDateTime eventTime) {
 
         switch (event.toUpperCase()) {
             case "INSCHATTINGOPGESTART":
                 return new InschattingOpgestart(eventTime)
             case "INSCHATTINGBEEINDIGD":
                 return new InschattingBeeindigd(eventTime)
+            case "INSCHATTINGSGESPREKALSOPDRACHTGEPLAND":
+                return new InschattingsGesprekAlsOpdrachtGepland(eventTime)
+            case "INSCHATTINGSGESPREKALSBELLIJSTGEPLAND":
+                return new InschattingsGesprekAlsBellijstGepland(eventTime)
             default:
                 return new InosEventDoesNotAffectPrediction(eventTime)
         }
     }
-    Map<String,String> Forecast(String event,long eventTime,long timeInStateBeforePause){
-        def forecast=createEmptyForecast()
+//    final SqlStruct outputSchema
+//    final SqlStruct beingEndSchema
 
-        if(event=="InschattingOpgestart"){
-            forecast.Affected=true
-            forecast.IG=eventTime+1000
-            forecast.OG1=eventTime+2000
-            forecast.OG2=eventTime+3000
-        }
-        return forecast
+
+    @Udf()
+    def String forecast(String event, long eventTime, long timeInStateBeforePause) {
+
+        LocalDateTime eventTimeCasted = Instant.ofEpochMilli(eventTime).toDate().toLocalDateTime()
+        def forecaster = GetForecastPredictor(event, eventTimeCasted)
+        def map = forecaster.toMap()
+        String resultString= JsonOutput.toJson (map)
+        return resultString
     }
 }
 
@@ -45,7 +52,7 @@ abstract class AbstractForecastPredictor {
     public Tuple2<LocalDateTime,LocalDateTime> OG1
     public Tuple2<LocalDateTime,LocalDateTime> OG2
 
-    public final boolean PredictionsAffectedByEvent =true
+    public boolean EventAffectsPredictions =true
 
     AbstractForecastPredictor(LocalDateTime eventTime){
         this.eventTime=eventTime
@@ -57,7 +64,9 @@ abstract class AbstractForecastPredictor {
     static LocalDateTime GetStartDate(LocalDateTime date){
         return date.clearTime().plusNanos(0)
     }
+
     static LocalTime endOfDayTime =new LocalTime(23,59,59,999999999)
+
     static LocalDateTime GetEndDate(LocalDateTime date){
         return date.clearTime().plusNanos(endOfDayTime.toNanoOfDay())
     }
@@ -70,12 +79,24 @@ abstract class AbstractForecastPredictor {
     def abstract void  CalculateOG1()
     def abstract void  CalculateOG2()
 
+    def Map<String,?> toMap(){
+        def dateToMap = { Tuple2<LocalDateTime,LocalDateTime>  input ->  [Begin:input.getV1().toInstant(ZoneOffset.UTC).toEpochMilli(), End:input.getV2().toInstant(ZoneOffset.UTC).toEpochMilli()]}
 
+        return [
+        PredictionAffectd:true,
+        IG:this.IG==null?'':dateToMap(this.IG),
+        OG1:this.OG1==null?'':dateToMap(this.OG1),
+        OG2:this.OG2==null?'':dateToMap(this.OG2)
+        ]
+    }
 }
+
+
+
 class InosEventDoesNotAffectPrediction extends AbstractForecastPredictor{
-    InosEventDoesNotAffectPrediction(Date eventTime) {
+    InosEventDoesNotAffectPrediction(LocalDateTime eventTime) {
         super(eventTime)
-        PredictionsAffectedByEvent=false
+        EventAffectsPredictions=false
     }
 
     @Override

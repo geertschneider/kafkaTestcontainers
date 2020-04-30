@@ -20,7 +20,7 @@ class ForecastCalculator {
         println (opgestart.toString())
 
 
-        Assert.assertTrue("check if the affected property is set",opgestart.PredictionsAffectedByEvent)
+        Assert.assertTrue("check if the affected property is set",opgestart.EventAffectsPredictions)
         //Inschattingsgesprek
         Assert.assertEquals('compare IGStart dates',   new LocalDateTime(new LocalDate(2020,2,5),beginOfDay), opgestart.IG[0])
         Assert.assertEquals("compare IGEnd dates",  new  LocalDateTime(new LocalDate( 2020,2,19),endOfDay),opgestart.IG[1])
@@ -41,7 +41,7 @@ class ForecastCalculator {
         def opgestart = CallCenterForecaster.GetForecastPredictor("InschattingsGesprekAlsOpdrachtGepland",testDate)
 
 
-        Assert.assertTrue("check if the affected property is set",opgestart.PredictionsAffectedByEvent)
+        Assert.assertTrue("check if the affected property is set",opgestart.EventAffectsPredictions)
         //Inschattingsgesprek
         Assert.assertEquals('compare IGStart dates',   new LocalDateTime(new LocalDate(2020,1,2),beginOfDay), opgestart.IG[0])
         Assert.assertEquals("compare IGEnd dates",  new  LocalDateTime(new LocalDate( 2020,1,16),endOfDay),opgestart.IG[1])
@@ -53,6 +53,7 @@ class ForecastCalculator {
 //      Tweede opvolggesprek
         Assert.assertEquals('OG2Start',new LocalDateTime(new LocalDate(2020,6,20),beginOfDay),opgestart.OG2[0])
         Assert.assertEquals('OG2End',new LocalDateTime(new LocalDate( 2020,7,4),endOfDay),opgestart.OG2[1])
+
     }
 
     @Test
@@ -65,7 +66,7 @@ class ForecastCalculator {
 
         println (opgestart.toString())
 
-        Assert.assertTrue("check if the affected property is set",opgestart.PredictionsAffectedByEvent)
+        Assert.assertTrue("check if the affected property is set",opgestart.EventAffectsPredictions)
         //Inschattingsgesprek
         Assert.assertEquals('compare IGStart dates',   new LocalDateTime(new LocalDate(2020,1,1),beginOfDay), opgestart.IG[0])
         Assert.assertEquals("compare IGEnd dates",  new  LocalDateTime(new LocalDate( 2020,1,15),endOfDay),opgestart.IG[1])
@@ -88,11 +89,21 @@ class ForecastCalculator {
         println (opgestart.toString())
 
 
-        Assert.assertTrue("check if the affected property is set",opgestart.PredictionsAffectedByEvent)
+        Assert.assertTrue("check if the affected property is set",opgestart.EventAffectsPredictions)
         //Inschattingsgesprek
         Assert.assertNull('compare IGStart dates',   opgestart.IG)
         Assert.assertNull('compare IGStart dates',   opgestart.OG1)
         Assert.assertNull('compare IGStart dates',   opgestart.OG2)
+    }
+
+
+    @Test
+    public void "Check event that does not affect the forecast"(){
+
+        LocalDateTime testDate =  new LocalDateTime(new LocalDate(2020,1,1),new LocalTime(17,20,54,0))
+
+        def opgestart = CallCenterForecaster.GetForecastPredictor("bla bla bla",testDate)
+        Assert.assertFalse (opgestart.EventAffectsPredictions)
     }
 
 }
