@@ -2,6 +2,7 @@ import groovy.json.JsonOutput
 import groovy.util.logging.Slf4j
 import io.confluent.ksql.function.udf.Udf
 import io.confluent.ksql.function.udf.UdfDescription
+import io.confluent.ksql.function.udf.UdfParameter
 
 import java.time.Instant
 import java.time.LocalDateTime
@@ -11,9 +12,9 @@ import java.time.ZoneOffset
 
 @Slf4j
 @UdfDescription(
-        name = "Calculate forecast",
+        name = "forecastGesprekken",
         description = "Calculate the forecast based on the incoming event.")
-class CallCenterForecaster {
+class ForecastGesprekken {
 
 
     def static AbstractForecastPredictor GetForecastPredictor(String event, LocalDateTime eventTime) {
@@ -34,15 +35,47 @@ class CallCenterForecaster {
 //    final SqlStruct outputSchema
 //    final SqlStruct beingEndSchema
 
+    @Udf(description = "calculate when calls will happen based on the inos event")
+    public String forecastGesprekken(
+            @UdfParameter(value = "event")  String event,
+            @UdfParameter(value = "eventTime") long eventTime)
+    {
+        log.debug ("forecastGesprekken called with ${event} and ${eventTime}")
+        return forecastGesprekken(event,eventTime,0l)
+    }
 
-    @Udf()
-    def String forecast(String event, long eventTime, long timeInStateBeforePause) {
+    @Udf(description = "calculate when calls will happen based on the inos event. This by also taking a pauze period into account")
+    public String forecastGesprekken(
+            @UdfParameter(value = "event")  String event,
+            @UdfParameter(value = "eventTime") long eventTime,
+            @UdfParameter(value = "timeSpendinPauzeInPreviousStep") long timeInPauze){
+try{
+
+    log.debug ("forecastGesprekken called with ${event} and ${eventTime} and pauze ${timeInPauze}")
 
         LocalDateTime eventTimeCasted = Instant.ofEpochMilli(eventTime).toDate().toLocalDateTime()
         def forecaster = GetForecastPredictor(event, eventTimeCasted)
         def map = forecaster.toMap()
-        String resultString= JsonOutput.toJson (map)
-        return resultString
+    def convertToString = {
+            if(forecaster.EventAffectsPredictions)
+                return         """{"PredictionAffected":true,
+                            "IG":{"Begin":${map.IG.Begin},"End":${map.IG.End}},
+"OG1":{"Begin":${map.OG1.Begin},"End":${map.OG1.End}},
+"OG2":{"Begin":${map.OG2.Begin},"End":${map.OG2.End}}                            
+                        }
+                """.replaceAll("\\s","")
+            else
+                return """
+                {"PredictionAffected":false}
+                """.replaceAll("\\s","")
+    }
+
+        return convertToString()
+}
+        catch(Exception ex){
+            log.error(ex)
+        }
+        return "ERROR - see logs"
     }
 }
 
@@ -80,10 +113,10 @@ abstract class AbstractForecastPredictor {
     def abstract void  CalculateOG2()
 
     def Map<String,?> toMap(){
-        def dateToMap = { Tuple2<LocalDateTime,LocalDateTime>  input ->  [Begin:input.getV1().toInstant(ZoneOffset.UTC).toEpochMilli(), End:input.getV2().toInstant(ZoneOffset.UTC).toEpochMilli()]}
+        def dateToMap = { Tuple2<LocalDateTime,LocalDateTime>  input ->  [Begin:input.first.toInstant(ZoneOffset.UTC).toEpochMilli(), End:input.second.toInstant(ZoneOffset.UTC).toEpochMilli()]}
 
         return [
-        PredictionAffectd:true,
+        PredictionAffected:true,
         IG:this.IG==null?'':dateToMap(this.IG),
         OG1:this.OG1==null?'':dateToMap(this.OG1),
         OG2:this.OG2==null?'':dateToMap(this.OG2)

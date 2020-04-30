@@ -1,0 +1,86 @@
+[
+{
+"eventIdentifier":"EventIdentifier27",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-01T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-01","ikl":9 ,"eersteInschattingId":"eersteInschattingId9"}
+},
+{
+"eventIdentifier":"EventIdentifier28",
+"eventType":"inos/OngeplandInschattingsGesprekPlaatsgevonden",
+"revision":"1",
+"timestamp":"2020-01-15T00:00:00.000Z",
+"payload": {"verslag":"Klant weet niet goed zijn status","plaatsGevondenOp":"2020-01-15","ikl":9 ,"eersteInschattingId":"eersteInschattingId9"}
+},
+{
+"eventIdentifier":"EventIdentifier29",
+"eventType":"Inos/InschattingBeeindigd",
+"revision":"1",
+"timestamp":"2020-01-15T00:00:00.000Z",
+"payload": {"resultaat":"INGESCHAT_ALS_PERSOONLIJKE_DIENSTVERLENING_NODIG","reden":"Persoonlijke dienstverlening geregistreerd","beeindigdDatum":"2020-01-15T00:00:00.000Z","ikl":9 ,"eersteInschattingId":"eersteInschattingId9"}
+},
+{
+"eventIdentifier":"EventIdentifier54",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-01T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-01","ikl":16 ,"eersteInschattingId":"eersteInschattingId16"}
+},
+{
+"eventIdentifier":"EventIdentifier55",
+"eventType":"inos/ZelfredzaamInschattenMogelijkGeworden",
+"revision":"1",
+"timestamp":"2020-01-01T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren mogelijk","datumSinds":"2020-01-22","ikl":16 ,"eersteInschattingId":"eersteInschattingId16"}
+},
+{
+"eventIdentifier":"EventIdentifier63",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-01T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-01","ikl":19 ,"eersteInschattingId":"eersteInschattingId19"}
+},
+{
+"eventIdentifier":"EventIdentifier64",
+"eventType":"inos/ZelfredzaamInschattenMogelijkGeworden",
+"revision":"1",
+"timestamp":"2020-01-22T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren mogelijk","datumSinds":"2020-01-22","ikl":19 ,"eersteInschattingId":"eersteInschattingId19"}
+},
+{
+"eventIdentifier":"EventIdentifier65",
+"eventType":"inos/OngeplandInschattingsGesprekPlaatsgevonden",
+"revision":"1",
+"timestamp":"2020-01-24T00:00:00.000Z",
+"payload": {"verslag":"Zelfredzaam denkt klant","plaatsGevondenOp":"2020-01-24","ikl":19 ,"eersteInschattingId":"eersteInschattingId19"}
+},
+{
+"eventIdentifier":"EventIdentifier66",
+"eventType":"inos/InschattingOpgestart",
+"revision":"1",
+"timestamp":"2020-01-01T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-01","ikl":20 ,"eersteInschattingId":"eersteInschattingId20"}
+},
+{
+"eventIdentifier":"EventIdentifier67",
+"eventType":"inos/ZelfredzaamInschattenMogelijkGeworden",
+"revision":"1",
+"timestamp":"2020-01-22T00:00:00.000Z",
+"payload": {"omschrijving":"Zelfredzaam registreren mogelijk","datumSinds":"2020-01-22","ikl":20 ,"eersteInschattingId":"eersteInschattingId20"}
+},
+{
+"eventIdentifier":"EventIdentifier68",
+"eventType":"inos/OngeplandInschattingsGesprekPlaatsgevonden",
+"revision":"1",
+"timestamp":"2020-01-26T00:00:00.000Z",
+"payload": {"verslag":"Zelfredzaam denkt klant","plaatsGevondenOp":"2020-01-26","ikl":20 ,"eersteInschattingId":"eersteInschattingId20"}
+},
+{
+"eventIdentifier":"EventIdentifier55",
+"eventType":"inos/ZelfredzaamInschattenMogelijkGeworden",
+"revision":"1",
+"timestamp":"2020-01-01T00:00:00.000Z",
+"payload": {"resultaat":"INGESCHAT_ALS_ZELFREDZAAM","reden":"Zelfredzaam geregistreerd","beeindigdDatum":"2020-01-01T00:00:00.000Z","ikl":16 ,"eersteInschattingId":"eersteInschattingId16"}
+}
+]

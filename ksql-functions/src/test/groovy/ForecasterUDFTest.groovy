@@ -19,7 +19,7 @@ class ForecasterUDFTest {
 
     @Test
     public void "Check if forecaster can be created"() {
-        def forecaster = new CallCenterForecaster()
+        def forecaster = new ForecastGesprekken()
         Assert.assertNotNull(forecaster)
     }
 
@@ -27,20 +27,38 @@ class ForecasterUDFTest {
     public void "Check Convertion ToJSON"(){
         LocalDateTime testDate =  LocalDateTime.of(2020,1,1,17,20,54)
 
-        def foreCaster = new CallCenterForecaster()
-        String result = foreCaster.forecast('InschattingOpgestart',toEpoch(testDate) ,0)
+        def foreCaster = new ForecastGesprekken()
+        String result = foreCaster.forecastGesprekken('InschattingOpgestart',toEpoch(testDate) ,0)
         //this checks if the json convertion is valid
         def parsedJSON=  convertToObject(result)
         Assert.assertNotNull(parsedJSON)
-
+        println("""
+        JSON RECEIVED :
+        ${result}
+        """)
         //check individual values of the json
-        Assert.assertTrue('check parameter EventAffectsPredictions',parsedJSON.PredictionAffectd)
+        Assert.assertTrue('check parameter EventAffectsPredictions',parsedJSON.PredictionAffected)
         def IG=parsedJSON.IG
         def expectedDate = new LocalDateTime(new LocalDate(2020,2,5),beginOfDay)
         Assert.assertEquals('check start',toEpoch(expectedDate),IG.Begin)
 
         expectedDate = new LocalDateTime(new LocalDate( 2020,2,19),endOfDay)
         Assert.assertEquals('check start',toEpoch(expectedDate),IG.End)
+    }
+    @Test
+    public void RealTest(){
+
+        def foreCaster = new ForecastGesprekken()
+        String result = foreCaster.forecastGesprekken('InschattingOpgestart',1577836800000)
+        //this checks if the json convertion is valid
+        println(result)
+        def parsedJSON=  convertToObject(result)
+
+        Assert.assertFalse('no results',result.isEmpty())
+        println("JSON received : ${result}")
+
+        Assert.assertNotNull('return not parsed',parsedJSON)
+
     }
 
 //    @Test
