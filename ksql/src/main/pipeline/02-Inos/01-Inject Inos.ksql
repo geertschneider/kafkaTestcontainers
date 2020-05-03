@@ -1,15 +1,55 @@
-create stream STR_INOSEVENTS
-WITH (value_format='AVRO') AS
+--@DeleteTopic
+CREATE STREAM STR_INOSEVENTS_RAW
+WITH (value_format='JSON') AS
 select
-    extractjsonfield(payload,'$.ikl') IKL,
+    cast(extractjsonfield(payload,'$.ikl') as INT) as IKL,
     eventIdentifier,
     eventType,
     substring(eventType,6) as eventName,
-    eventTime as startDate,
-    STRINGTOTIMESTAMP('9999-12-31T23:59:59.999Z','yyyy-MM-dd''T''HH:mm:ss.SSSX') as endDate
+    extractjsonfield(payload,'$.eersteInschattingId') eersteInschattingId,
+    extractjsonfield(payload,'$.opvolgingId') opvolgingId,
+    eventTime as eventTime,
+    payload as payload
 from STR_INTEGRATIONEVENTS_AVRO
 where rowkey='inos'
 partition by IKL;
 
 
+--@DeleteTopic
+create stream STR_INOS_FORECASTRESULT_RAW
+WITH (value_format='JSON') AS
+SELECT
+    eventIdentifier,
+    case
+        when eersteInschattingId is null then
+            opvolgingId
+        else
+            eersteInschattingId
+    end as trajectID,
+    IKL,
+    eventname,
+    eventTime,
+    forecastgesprekken(substring(eventType,6),eventTime) as forecastInfo
+from STR_INOSEVENTS_RAW;
+
+
+--@DeleteTopic
+create stream STR_INOS_FORECASTRESULT_PARSED
+WITH (value_format='JSON',kafka_topic='OUT_INOS_FORECASTRESULT',partitions=6) AS
+SELECT
+    eventIdentifier,
+    trajectID,
+    IKL,
+    eventname,
+    eventTime,
+    cast(extractjsonfield(forecastInfo,'$.PredictionAffected') as boolean) as PredictionAffected,
+    extractjsonfield(forecastInfo,'$.IG.BeginPeriod') as IGBegin,
+    extractjsonfield(forecastInfo,'$.IG.EndPeriod') as IGEnd,
+    extractjsonfield(forecastInfo,'$.OG1.BeginPeriod') as OG1Begin,
+    extractjsonfield(forecastInfo,'$.OG1.EndPeriod') as OG1End,
+    extractjsonfield(forecastInfo,'$.OG2.BeginPeriod') as OG2Begin,
+    extractjsonfield(forecastInfo,'$.OG2.EndPeriod') as OG2End
+from STR_INOS_FORECASTRESULT_RAW
+where cast(extractjsonfield(forecastInfo,'$.PredictionAffected') as boolean) = true
+;
 

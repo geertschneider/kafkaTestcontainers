@@ -16,6 +16,13 @@ publishing {
     }
 }
 
+tasks.register("Inos",com.redpillanalytics.gradle.tasks.PipelineExecuteTask){
+    group = "KSQL Pipelines"
+    description="Deploys the inos pipeline"
+    pipelinePath = "src/main/pipeline/02-Inos"
+    fromBeginning=true
+}
+
 dependencies {
 
     compile 'org.codehaus.groovy:groovy-all:3.0.3'

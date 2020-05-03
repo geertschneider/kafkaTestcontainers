@@ -34,7 +34,7 @@ class ForecastGesprekken {
     }
 //    final SqlStruct outputSchema
 //    final SqlStruct beingEndSchema
-
+//TODO : replace by returning a sctructure or map instead of JSON
     @Udf(description = "calculate when calls will happen based on the inos event")
     public String forecastGesprekken(
             @UdfParameter(value = "event")  String event,
@@ -58,10 +58,14 @@ try{
         def map = forecaster.toMap()
     def convertToString = {
             if(forecaster.EventAffectsPredictions)
+                //TODO:
+                // replace by JSON functions instead of hand building this string
+                // using json slurper gives issue when executing this on the server
+                // java.lang.RuntimeException: Unable to load FastStringService
                 return         """{"PredictionAffected":true,
-                            "IG":{"Begin":${map.IG.Begin},"End":${map.IG.End}},
-"OG1":{"Begin":${map.OG1.Begin},"End":${map.OG1.End}},
-"OG2":{"Begin":${map.OG2.Begin},"End":${map.OG2.End}}                            
+                            "IG":{"BeginPeriod":${map.IG.Begin},"EndPeriod":${map.IG.End}},
+"OG1":{"BeginPeriod":${map.OG1.Begin},"EndPeriod":${map.OG1.End}},
+"OG2":{"BeginPeriod":${map.OG2.Begin},"EndPeriod":${map.OG2.End}}                            
                         }
                 """.replaceAll("\\s","")
             else

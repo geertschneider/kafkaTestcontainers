@@ -1,0 +1,23 @@
+create stream STR_INOS_FORECASTRESULT_PARSED
+(
+    eventIdentifier varchar,
+    trajectID varchar,
+    IKL int,
+    eventname varchar,
+    eventTime bigint,
+    IG STRUCT<BeginPeriod bigint,EndPeriod bigint>
+)
+WITH (value_format='AVRO',kafka_topic='INOS_FORECASTRESULT_PARSED',partitions=6)
+;
+
+
+insert into STR_INOS_FORECASTRESULT_PARSED
+SELECT
+    eventIdentifier,
+    trajectID,
+    IKL,
+    eventname,
+    eventTime,
+    extractjsonfield(forecastInfo,'$.IG') as IG
+    from STR_INOS_FORECASTRESULT_RAW
+where extractjsonfield(forecastInfo,'$.PredictionAffected') =true
