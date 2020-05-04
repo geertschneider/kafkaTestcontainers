@@ -80,3 +80,44 @@ services:
     entrypoint: /bin/sh
     tty: true
 
+  nifi:
+    container_name: nifi
+    image: apache/nifi:1.9.2
+    depends_on:
+      - kafka
+      - zookeeper
+    ports :
+      - 8080:8080
+    environment:
+      - NIFI_ZK_CONNECT_STRING=zookeeper:2181
+
+  kudu-master:
+    container_name: kudu-master
+    image: apache/kudu
+    ports :
+      - 8051:8051
+      - 7051:7051
+    command: ["master"]
+
+  kudu-tserver:
+    container_name: kudu-tserver
+    image: apache/kudu:latest
+    depends_on:
+      - kudu-master
+    command: ["tserver"]
+    environment:
+      - KUDU_MASTERS=kudu-master
+
+  impala:
+    container_name: impala
+    image: apache/kudu:impala-latest
+
+    ports:
+    - 21050:21050
+    - 25000:25000
+    - 25010:25010
+    - 25020:25020
+    environment:
+      - KUDU_MASTERS=kudu-master
+    command: ["impala"]
+

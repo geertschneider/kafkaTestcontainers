@@ -43,13 +43,74 @@ SELECT
     eventname,
     eventTime,
     cast(extractjsonfield(forecastInfo,'$.PredictionAffected') as boolean) as PredictionAffected,
-    extractjsonfield(forecastInfo,'$.IG.BeginPeriod') as IGBegin,
-    extractjsonfield(forecastInfo,'$.IG.EndPeriod') as IGEnd,
-    extractjsonfield(forecastInfo,'$.OG1.BeginPeriod') as OG1Begin,
-    extractjsonfield(forecastInfo,'$.OG1.EndPeriod') as OG1End,
-    extractjsonfield(forecastInfo,'$.OG2.BeginPeriod') as OG2Begin,
-    extractjsonfield(forecastInfo,'$.OG2.EndPeriod') as OG2End
+    cast( extractjsonfield(forecastInfo,'$.IG.BeginPeriod') as bigint) as IGBegin,
+    cast( extractjsonfield(forecastInfo,'$.IG.EndPeriod')  as bigint) as IGEnd,
+    cast( extractjsonfield(forecastInfo,'$.OG1.BeginPeriod') as bigint) as OG1Begin,
+    cast( extractjsonfield(forecastInfo,'$.OG1.EndPeriod') as bigint) as OG1End,
+    cast( extractjsonfield(forecastInfo,'$.OG2.BeginPeriod') as bigint) as OG2Begin,
+    cast( extractjsonfield(forecastInfo,'$.OG2.EndPeriod') as bigint) as OG2End
 from STR_INOS_FORECASTRESULT_RAW
 where cast(extractjsonfield(forecastInfo,'$.PredictionAffected') as boolean) = true
 ;
 
+--@DeleteTopic
+create stream STR_INOS_FORECASTRESULT_PIVOT
+(
+
+    IKLKey varchar,
+    eventIdentifier varchar,
+    trajectID varchar,
+    IKL int,
+    eventname varchar,
+    eventTime bigint,
+    TypeGesprek varchar,
+    TypeInschattingsGesprek varchar,
+    StartPeriod bigint,
+    EndPeriod bigint
+)
+WITH (value_format='JSON',KAFKA_TOPIC='OUT_FORECASTRESULT_PIVOT',partitions=6,KEY='IKLKey');
+
+insert into STR_INOS_FORECASTRESULT_PIVOT
+select
+cast(IKL as varchar) IKLKey ,
+eventIdentifier ,
+    trajectID ,
+    IKL,
+    eventname ,
+    eventTime ,
+    'Inschattingsgesprek' as TypeGesprek,
+    '' as TypeInschattingsGesprek,
+    IGBegin as StartPeriod,
+    IGEnd as EndPeriod
+from STR_INOS_FORECASTRESULT_PARSED
+partition by IKLKey;
+
+insert into STR_INOS_FORECASTRESULT_PIVOT
+select
+cast(IKL as varchar) IKLKey ,
+eventIdentifier ,
+    trajectID ,
+    IKL,
+    eventname ,
+    eventTime ,
+    'Opvolgingsgesprek1' as TypeGesprek,
+    '' as TypeInschattingsGesprek,
+    OG1Begin as StartPeriod,
+    OG1End as EndPeriod
+from STR_INOS_FORECASTRESULT_PARSED
+partition by IKLKey;
+
+insert into STR_INOS_FORECASTRESULT_PIVOT
+select
+cast(IKL as varchar) IKLKey ,
+eventIdentifier ,
+    trajectID ,
+    IKL,
+    eventname ,
+    eventTime ,
+    'Inschattingsgesprek' as TypeGesprek,
+    '' as TypeInschattingsGesprek,
+    OG2Begin as StartPeriod,
+    OG2End as EndPeriod
+from STR_INOS_FORECASTRESULT_PARSED
+partition by IKLKey;

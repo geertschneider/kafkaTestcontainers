@@ -23,7 +23,7 @@ def KafkaProducer<String, String> createKafkaProducer() {
 
 def kafkaProducer = createKafkaProducer()
 //String pathToLoad ="C:\\Code\\kafkaTestcontainers\\ksql\\src\\test\\resources\\afspraken.kafka"
-String pathToLoad ="C:\\Code\\kafkaTestcontainers\\ksql\\src\\test\\resources\\inos\\Testtrajectenzonderpauzeversie1.json"
+String pathToLoad ="C:\\Code\\vdpEventProcessing\\ksql\\src\\test\\resources\\inos\\Testtrajectenzonderpauzeversie1.json"
 def jsonLines =  new File(pathToLoad).text
 def slurper = new JsonSlurper()
 def json= slurper.parseText(jsonLines)
