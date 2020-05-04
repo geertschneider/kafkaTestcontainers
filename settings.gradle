@@ -1,4 +1,4 @@
-rootProject.name = 'kafkaTestcontainers'
+rootProject.name = 'vdpEventProcessing'
 include 'ksql'
 include 'ksql-functions'
 
