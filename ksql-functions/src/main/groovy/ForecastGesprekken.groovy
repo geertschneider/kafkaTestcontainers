@@ -4,7 +4,9 @@ import io.confluent.ksql.function.udf.Udf
 import io.confluent.ksql.function.udf.UdfDescription
 import io.confluent.ksql.function.udf.UdfParameter
 
+import java.time.DayOfWeek
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneOffset
@@ -49,38 +51,47 @@ class ForecastGesprekken {
             @UdfParameter(value = "event")  String event,
             @UdfParameter(value = "eventTime") long eventTime,
             @UdfParameter(value = "timeSpendinPauzeInPreviousStep") long timeInPauze){
-try{
+
 
     log.debug ("forecastGesprekken called with ${event} and ${eventTime} and pauze ${timeInPauze}")
 
         LocalDateTime eventTimeCasted = Instant.ofEpochMilli(eventTime).toDate().toLocalDateTime()
         def forecaster = GetForecastPredictor(event, eventTimeCasted)
         def map = forecaster.toMap()
-    def convertToString = {
-            if(forecaster.EventAffectsPredictions)
-                //TODO:
-                // replace by JSON functions instead of hand building this string
-                // using json slurper gives issue when executing this on the server
-                // java.lang.RuntimeException: Unable to load FastStringService
-                return         """{"PredictionAffected":true,
-                            "IG":{"BeginPeriod":${map.IG.Begin},"EndPeriod":${map.IG.End}},
-"OG1":{"BeginPeriod":${map.OG1.Begin},"EndPeriod":${map.OG1.End}},
-"OG2":{"BeginPeriod":${map.OG2.Begin},"EndPeriod":${map.OG2.End}}                            
-                        }
-                """.replaceAll("\\s","")
-            else
-                return """
-                {"PredictionAffected":false}
-                """.replaceAll("\\s","")
+
+    def ConvertToJson={  prediction ->
+        def weekArray= prediction.StartEndWeeks.collect(date -> date.toInstant(ZoneOffset.UTC).toEpochMilli().toString()).join(',')
+        """{"BeginPeriod":${prediction.StartEndDays.Begin},"EndPeriod":${prediction.StartEndDays.End},"OverlappingWeeks":[${weekArray}]}"""
+    }
+
+        //TODO:
+        // replace by JSON functions instead of hand building this string
+        // using json slurper gives issue when executing this on the server
+        // java.lang.RuntimeException: Unable to load FastStringService
+
+        def convertToString = {
+
+        if (forecaster.EventAffectsPredictions)
+
+
+            return '{'
+                        .concat('"PredictionAffected":true,')
+                        .concat('"IG":' + ConvertToJson(map.IG))
+                        .concat(',"OG1":' + ConvertToJson(map.OG1))
+                        .concat(',"OG2":' + ConvertToJson(map.OG2))
+                    .concat('}')
+                .replaceAll("\\s", "")
+        else
+        return '{"PredictionAffected":false}'
     }
 
         return convertToString()
 }
-        catch(Exception ex){
-            log.error(ex)
-        }
-        return "ERROR - see logs"
-    }
+
+//        """
+//"OG1":{"BeginPeriod":${map.OG1.StartEndDays.Begin},"EndPeriod":${map.OG1.StartEndDays.End}},
+//"OG2":{"BeginPeriod":${map.OG2.StartEndDays.Begin},"EndPeriod":${map.OG2.StartEndDays.End}}
+
 }
 
 abstract class AbstractForecastPredictor {
@@ -99,7 +110,7 @@ abstract class AbstractForecastPredictor {
     }
 
     static LocalDateTime GetStartDate(LocalDateTime date){
-        return date.clearTime().plusNanos(0)
+        return date.toLocalDate().atStartOfDay()
     }
 
     static LocalTime endOfDayTime =new LocalTime(23,59,59,999999999)
@@ -110,6 +121,20 @@ abstract class AbstractForecastPredictor {
     static Tuple2<LocalDateTime,LocalDateTime> GetStartAndEnd(LocalDateTime startDate,int period ){
         new Tuple2<LocalDateTime ,LocalDateTime>(GetStartDate(startDate),GetEndDate(startDate.plusDays(period)))
     }
+    static convertDates = { Tuple2<LocalDateTime,LocalDateTime>  input ->  [Begin:input.first.toInstant(ZoneOffset.UTC).toEpochMilli(), End:input.second.toInstant(ZoneOffset.UTC).toEpochMilli()]}
+
+    static List<LocalDateTime>  getOverlappingWeeks(Tuple2<LocalDateTime,LocalDateTime> startEndDates){
+        def startDate = startEndDates.getV1().toLocalDate()
+        def endPeriod = startEndDates.getV2().toLocalDate()
+        def firstMonday = startDate.plusDays(1 - DayOfWeek.from(startDate).value)
+        List<LocalDateTime> firstDays=[]
+        def nextMonday=firstMonday
+        while(nextMonday<endPeriod){
+            firstDays <<  nextMonday.atStartOfDay()
+            nextMonday=nextMonday.plusWeeks(1)
+        }
+        return firstDays
+    }
 
 
     def abstract void  CalculateIG()
@@ -117,13 +142,12 @@ abstract class AbstractForecastPredictor {
     def abstract void  CalculateOG2()
 
     def Map<String,?> toMap(){
-        def dateToMap = { Tuple2<LocalDateTime,LocalDateTime>  input ->  [Begin:input.first.toInstant(ZoneOffset.UTC).toEpochMilli(), End:input.second.toInstant(ZoneOffset.UTC).toEpochMilli()]}
 
         return [
         PredictionAffected:true,
-        IG:this.IG==null?'':dateToMap(this.IG),
-        OG1:this.OG1==null?'':dateToMap(this.OG1),
-        OG2:this.OG2==null?'':dateToMap(this.OG2)
+        IG:this.IG==null?'':[StartEndDays:AbstractForecastPredictor.convertDates(this.IG),StartEndWeeks:AbstractForecastPredictor.getOverlappingWeeks(this.IG)],
+        OG1:this.OG1==null?'':[StartEndDays:AbstractForecastPredictor.convertDates(this.OG1),StartEndWeeks:AbstractForecastPredictor.getOverlappingWeeks(this.OG1)],
+        OG2:this.OG2==null?'':[StartEndDays:AbstractForecastPredictor.convertDates(this.OG2),StartEndWeeks:AbstractForecastPredictor.getOverlappingWeeks(this.OG2)]
         ]
     }
 }

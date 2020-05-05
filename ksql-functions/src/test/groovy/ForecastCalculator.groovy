@@ -34,6 +34,18 @@ class ForecastCalculator {
         Assert.assertEquals('OG2End',new LocalDateTime(new LocalDate( 2020,8,7),endOfDay),opgestart.OG2[1])
     }
 
+    @Test
+    public void TestBeginOfWeeks(){
+
+        def startDate = new LocalDateTime( LocalDate.of (2020,5,5),LocalTime.now())
+        def testDates= new Tuple2<LocalDateTime,LocalDateTime>( startDate,startDate.plusWeeks(1))
+        def weekStarts= AbstractForecastPredictor.getOverlappingWeeks(testDates)
+        Assert.assertEquals("2 weeks expexted to cover period",2,weekStarts.size() )
+
+        Assert.assertEquals("monday 04 MAY expected" , new LocalDateTime( LocalDate.of(2020,5,4),  LocalTime.of(0,0,0)),weekStarts[0])
+        Assert.assertEquals("monday 04 MAY expected" , new LocalDateTime( LocalDate.of(2020,5,11),LocalTime.of(0,0,0)),weekStarts[1])
+    }
+
 @Test
     public void "InschattingsGesprekAlsOpdrachtGepland"(){
 

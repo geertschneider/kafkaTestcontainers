@@ -29,21 +29,33 @@ class ForecasterUDFTest {
 
         def foreCaster = new ForecastGesprekken()
         String result = foreCaster.forecastGesprekken('InschattingOpgestart',toEpoch(testDate) ,0)
-        //this checks if the json convertion is valid
-        def parsedJSON=  convertToObject(result)
-        Assert.assertNotNull(parsedJSON)
+
         println("""
         JSON RECEIVED :
         ${result}
         """)
+
+        //this checks if the json convertion is valid
+        def parsedJSON=  convertToObject(result)
+        Assert.assertNotNull(parsedJSON)
+
         //check individual values of the json
         Assert.assertTrue('check parameter EventAffectsPredictions',parsedJSON.PredictionAffected)
         def IG=parsedJSON.IG
         def expectedDate = new LocalDateTime(new LocalDate(2020,2,5),beginOfDay)
-        Assert.assertEquals('check start',toEpoch(expectedDate),IG.Begin)
+        Assert.assertEquals('check start',toEpoch(expectedDate),IG.BeginPeriod)
 
         expectedDate = new LocalDateTime(new LocalDate( 2020,2,19),endOfDay)
-        Assert.assertEquals('check start',toEpoch(expectedDate),IG.End)
+        Assert.assertEquals('check start',toEpoch(expectedDate),IG.EndPeriod)
+
+        Assert.assertNotNull("check if OG1 exists",parsedJSON.OG1)
+        Assert.assertNotNull("check if OG1 EndPeriod",parsedJSON.OG1.BeginPeriod)
+        Assert.assertNotNull("check if OG1 EndPeriod",parsedJSON.OG1.EndPeriod)
+        Assert.assertNotNull("check if OG1 EndPeriod",parsedJSON.OG1.OverlappingWeeks)
+
+        Assert.assertNotNull("check if OG1 exists",parsedJSON.OG2)
+        Assert.assertNotNull("check if OG1 EndPeriod",parsedJSON.OG2.BeginPeriod)
+        Assert.assertNotNull("check if OG1 EndPeriod",parsedJSON.OG2.OverlappingWeeks)
     }
     @Test
     public void RealTest(){
