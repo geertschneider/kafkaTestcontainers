@@ -2,6 +2,7 @@
 CREATE STREAM STR_INOSEVENTS_RAW
 WITH (value_format='JSON') AS
 select
+    extractjsonfield(payload,'$.ikl') as IKLKey,
     cast(extractjsonfield(payload,'$.ikl') as INT) as IKL,
     eventIdentifier,
     eventType,
@@ -12,13 +13,14 @@ select
     payload as payload
 from STR_INTEGRATIONEVENTS_AVRO
 where rowkey='inos'
-partition by IKL;
+partition by IKLKey;
 
 
 --@DeleteTopic
 create stream STR_INOS_FORECASTRESULT_RAW
 WITH (value_format='JSON') AS
 SELECT
+    IKLKey,
     eventIdentifier,
     case
         when eersteInschattingId is null then
@@ -28,89 +30,47 @@ SELECT
     end as trajectID,
     IKL,
     eventname,
-    eventTime,
-    forecastgesprekken(substring(eventType,6),eventTime) as forecastInfo
+    eventTime
 from STR_INOSEVENTS_RAW;
 
-
 --@DeleteTopic
-create stream STR_INOS_FORECASTRESULT_PARSED
-WITH (value_format='JSON',kafka_topic='OUT_INOS_FORECASTRESULT',partitions=6) AS
+create stream STR_INOS_FORECASTRESULT_ALL
+WITH (value_format='JSON',PARTITIONS=6) AS
 SELECT
+    IKLKey as IKLKey,
     eventIdentifier,
     trajectID,
     IKL,
     eventname,
     eventTime,
-    cast(extractjsonfield(forecastInfo,'$.PredictionAffected') as boolean) as PredictionAffected,
-    cast( extractjsonfield(forecastInfo,'$.IG.BeginPeriod') as bigint) as IGBegin,
-    cast( extractjsonfield(forecastInfo,'$.IG.EndPeriod')  as bigint) as IGEnd,
-    cast( extractjsonfield(forecastInfo,'$.OG1.BeginPeriod') as bigint) as OG1Begin,
-    cast( extractjsonfield(forecastInfo,'$.OG1.EndPeriod') as bigint) as OG1End,
-    cast( extractjsonfield(forecastInfo,'$.OG2.BeginPeriod') as bigint) as OG2Begin,
-    cast( extractjsonfield(forecastInfo,'$.OG2.EndPeriod') as bigint) as OG2End
+    forecastgesprekken_weeks(eventName,eventTime) as overlappingWeeks,
+    forecastgesprekken_period(eventName,eventTime) as StartEndPeriods
 from STR_INOS_FORECASTRESULT_RAW
-where cast(extractjsonfield(forecastInfo,'$.PredictionAffected') as boolean) = true
-;
-
---@DeleteTopic
-create stream STR_INOS_FORECASTRESULT_PIVOT
-(
-
-    IKLKey varchar,
-    eventIdentifier varchar,
-    trajectID varchar,
-    IKL int,
-    eventname varchar,
-    eventTime bigint,
-    TypeGesprek varchar,
-    TypeInschattingsGesprek varchar,
-    StartPeriod bigint,
-    EndPeriod bigint
-)
-WITH (value_format='JSON',KAFKA_TOPIC='OUT_FORECASTRESULT_PIVOT',partitions=6,KEY='IKLKey');
-
-insert into STR_INOS_FORECASTRESULT_PIVOT
-select
-cast(IKL as varchar) IKLKey ,
-eventIdentifier ,
-    trajectID ,
-    IKL,
-    eventname ,
-    eventTime ,
-    'Inschattingsgesprek' as TypeGesprek,
-    '' as TypeInschattingsGesprek,
-    IGBegin as StartPeriod,
-    IGEnd as EndPeriod
-from STR_INOS_FORECASTRESULT_PARSED
 partition by IKLKey;
 
-insert into STR_INOS_FORECASTRESULT_PIVOT
+
+create stream STR_INOS_FORECASTRESULT_WEEKS_PIVOT with(VALUE_FORMAT='JSON')
+as
 select
-cast(IKL as varchar) IKLKey ,
-eventIdentifier ,
-    trajectID ,
-    IKL,
-    eventname ,
-    eventTime ,
-    'Opvolgingsgesprek1' as TypeGesprek,
-    '' as TypeInschattingsGesprek,
-    OG1Begin as StartPeriod,
-    OG1End as EndPeriod
-from STR_INOS_FORECASTRESULT_PARSED
+ IKLKey, eventIdentifier,trajectID,IKL,eventName,eventTime,
+ 'Inschattingsgesprek' as TypeGesprek,'' as TypeInschattingsGesprek,
+ explode(overlappingWeeks['IG']) as WeekStart
+from STR_INOS_FORECASTRESULT_ALL where not overlappingWeeks is null
 partition by IKLKey;
 
-insert into STR_INOS_FORECASTRESULT_PIVOT
+insert into STR_INOS_FORECASTRESULT_WEEKS_PIVOT
 select
-cast(IKL as varchar) IKLKey ,
-eventIdentifier ,
-    trajectID ,
-    IKL,
-    eventname ,
-    eventTime ,
-    'Inschattingsgesprek' as TypeGesprek,
-    '' as TypeInschattingsGesprek,
-    OG2Begin as StartPeriod,
-    OG2End as EndPeriod
-from STR_INOS_FORECASTRESULT_PARSED
+ IKLKey, eventIdentifier,trajectID,IKL,eventName,eventTime,
+ 'Opvolgingsgesprek1' as TypeGesprek,'' as TypeInschattingsGesprek,
+ explode(overlappingWeeks['OG1']) as WeekStart
+from STR_INOS_FORECASTRESULT_ALL where not overlappingWeeks is null
+partition by IKLKey;
+
+
+insert into STR_INOS_FORECASTRESULT_WEEKS_PIVOT
+select
+ IKLKey, eventIdentifier,trajectID,IKL,eventName,eventTime,
+ 'Opvolgingsgesprek2' as TypeGesprek,'' as TypeInschattingsGesprek,
+ explode(overlappingWeeks['OG2']) as WeekStart
+from STR_INOS_FORECASTRESULT_ALL where not overlappingWeeks is null
 partition by IKLKey;

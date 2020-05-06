@@ -3,6 +3,7 @@ import groovy.util.logging.Slf4j
 import io.confluent.ksql.function.udf.Udf
 import io.confluent.ksql.function.udf.UdfDescription
 import io.confluent.ksql.function.udf.UdfParameter
+import org.apache.tools.ant.types.selectors.SelectSelector
 
 import java.time.DayOfWeek
 import java.time.Instant
@@ -14,87 +15,89 @@ import java.time.ZoneOffset
 
 @Slf4j
 @UdfDescription(
-        name = "forecastGesprekken",
+        name = "forecastGesprekken_Period",
         description = "Calculate the forecast based on the incoming event.")
-class ForecastGesprekken {
+class ForecastGesprekken_Period {
 
 
-    def static AbstractForecastPredictor GetForecastPredictor(String event, LocalDateTime eventTime) {
 
-        switch (event.toUpperCase()) {
-            case "INSCHATTINGOPGESTART":
-                return new InschattingOpgestart(eventTime)
-            case "INSCHATTINGBEEINDIGD":
-                return new InschattingBeeindigd(eventTime)
-            case "INSCHATTINGSGESPREKALSOPDRACHTGEPLAND":
-                return new InschattingsGesprekAlsOpdrachtGepland(eventTime)
-            case "INSCHATTINGSGESPREKALSBELLIJSTGEPLAND":
-                return new InschattingsGesprekAlsBellijstGepland(eventTime)
-            default:
-                return new InosEventDoesNotAffectPrediction(eventTime)
-        }
-    }
-//    final SqlStruct outputSchema
-//    final SqlStruct beingEndSchema
-//TODO : replace by returning a sctructure or map instead of JSON
     @Udf(description = "calculate when calls will happen based on the inos event")
-    public String forecastGesprekken(
+    public Map<String,Map<String,Long>> forecastGesprekken_Period(
             @UdfParameter(value = "event")  String event,
             @UdfParameter(value = "eventTime") long eventTime)
     {
         log.debug ("forecastGesprekken called with ${event} and ${eventTime}")
-        return forecastGesprekken(event,eventTime,0l)
+        return forecastGesprekken_Period(event,eventTime,0l)
     }
 
     @Udf(description = "calculate when calls will happen based on the inos event. This by also taking a pauze period into account")
-    public String forecastGesprekken(
+    public Map<String,Map<String,Long>> forecastGesprekken_Period(
             @UdfParameter(value = "event")  String event,
             @UdfParameter(value = "eventTime") long eventTime,
             @UdfParameter(value = "timeSpendinPauzeInPreviousStep") long timeInPauze){
 
 
-    log.debug ("forecastGesprekken called with ${event} and ${eventTime} and pauze ${timeInPauze}")
+        LocalDateTime eventTimeCasted = Instant.ofEpochMilli(eventTime).toDate().toLocalDateTime()
+        def forecaster = AbstractForecastPredictor.GetInstance(event, eventTimeCasted)
+        return forecaster.datesToMap()
+    }
+
+}
+
+@Slf4j
+@UdfDescription(
+        name = "forecastGesprekken_Weeks",
+        description = "Calculate the forecast based on the incoming event.")
+class ForecastGesprekken_Weeks {
+
+//    final SqlStruct outputSchema
+//    final SqlStruct beingEndSchema
+    @Udf(description = "calculate when calls will happen based on the inos event")
+    public  Map<String,List<Long>> forecastGesprekken_Weeks(
+            @UdfParameter(value = "event")  String event,
+            @UdfParameter(value = "eventTime") long eventTime)
+    {
+        log.debug ("forecastGesprekken called with ${event} and ${eventTime}")
+        return forecastGesprekken_Weeks(event,eventTime,0l)
+    }
+
+    @Udf(description = "calculate when calls will happen based on the inos event. This by also taking a pauze period into account")
+    public Map<String,List<Long>> forecastGesprekken_Weeks(
+            @UdfParameter(value = "event")  String event,
+            @UdfParameter(value = "eventTime") long eventTime,
+            @UdfParameter(value = "timeSpendinPauzeInPreviousStep") long timeInPauze){
+
+
+        log.debug ("forecastGesprekken called with ${event} and ${eventTime} and pauze ${timeInPauze}")
 
         LocalDateTime eventTimeCasted = Instant.ofEpochMilli(eventTime).toDate().toLocalDateTime()
-        def forecaster = GetForecastPredictor(event, eventTimeCasted)
-        def map = forecaster.toMap()
+        def forecaster = AbstractForecastPredictor.GetInstance(event, eventTimeCasted)
+        def map = forecaster.weeksToMap()
 
-    def ConvertToJson={  prediction ->
-        def weekArray= prediction.StartEndWeeks.collect(date -> date.toInstant(ZoneOffset.UTC).toEpochMilli().toString()).join(',')
-        """{"BeginPeriod":${prediction.StartEndDays.Begin},"EndPeriod":${prediction.StartEndDays.End},"OverlappingWeeks":[${weekArray}]}"""
+        return map
     }
 
-        //TODO:
-        // replace by JSON functions instead of hand building this string
-        // using json slurper gives issue when executing this on the server
-        // java.lang.RuntimeException: Unable to load FastStringService
-
-        def convertToString = {
-
-        if (forecaster.EventAffectsPredictions)
-
-
-            return '{'
-                        .concat('"PredictionAffected":true,')
-                        .concat('"IG":' + ConvertToJson(map.IG))
-                        .concat(',"OG1":' + ConvertToJson(map.OG1))
-                        .concat(',"OG2":' + ConvertToJson(map.OG2))
-                    .concat('}')
-                .replaceAll("\\s", "")
-        else
-        return '{"PredictionAffected":false}'
-    }
-
-        return convertToString()
 }
 
-//        """
-//"OG1":{"BeginPeriod":${map.OG1.StartEndDays.Begin},"EndPeriod":${map.OG1.StartEndDays.End}},
-//"OG2":{"BeginPeriod":${map.OG2.StartEndDays.Begin},"EndPeriod":${map.OG2.StartEndDays.End}}
-
-}
 
 abstract class AbstractForecastPredictor {
+
+    static AbstractForecastPredictor  GetInstance(String event, LocalDateTime eventTime){
+            switch (event.toUpperCase()) {
+                case "INSCHATTINGOPGESTART":
+                    return new InschattingOpgestart(eventTime)
+                case "INSCHATTINGBEEINDIGD":
+                    return new InschattingBeeindigd(eventTime)
+                case "INSCHATTINGSGESPREKALSOPDRACHTGEPLAND":
+                    return new InschattingsGesprekAlsOpdrachtGepland(eventTime)
+                case "INSCHATTINGSGESPREKALSBELLIJSTGEPLAND":
+                    return new InschattingsGesprekAlsBellijstGepland(eventTime)
+                default:
+                    return new InosEventDoesNotAffectPrediction(eventTime)
+            }
+
+    }
+
     public  LocalDateTime eventTime
     public  Tuple2<LocalDateTime,LocalDateTime> IG
     public Tuple2<LocalDateTime,LocalDateTime> OG1
@@ -121,7 +124,7 @@ abstract class AbstractForecastPredictor {
     static Tuple2<LocalDateTime,LocalDateTime> GetStartAndEnd(LocalDateTime startDate,int period ){
         new Tuple2<LocalDateTime ,LocalDateTime>(GetStartDate(startDate),GetEndDate(startDate.plusDays(period)))
     }
-    static convertDates = { Tuple2<LocalDateTime,LocalDateTime>  input ->  [Begin:input.first.toInstant(ZoneOffset.UTC).toEpochMilli(), End:input.second.toInstant(ZoneOffset.UTC).toEpochMilli()]}
+    static convertDates = { Tuple2<LocalDateTime,LocalDateTime>  input ->  [BeginPeriod:input.first.toInstant(ZoneOffset.UTC).toEpochMilli(), EndPeriod:input.second.toInstant(ZoneOffset.UTC).toEpochMilli()]}
 
     static List<LocalDateTime>  getOverlappingWeeks(Tuple2<LocalDateTime,LocalDateTime> startEndDates){
         def startDate = startEndDates.getV1().toLocalDate()
@@ -141,14 +144,26 @@ abstract class AbstractForecastPredictor {
     def abstract void  CalculateOG1()
     def abstract void  CalculateOG2()
 
-    def Map<String,?> toMap(){
+    def Map<String,Map<String,Long >> datesToMap(){
+        if (this.EventAffectsPredictions )
+            return [
+            IG:this.IG==null? null :AbstractForecastPredictor.convertDates(this.IG),
+            OG1:this.OG1==null?null:AbstractForecastPredictor.convertDates(this.OG1),
+            OG2:this.OG2==null?null:AbstractForecastPredictor.convertDates(this.OG2)
+            ]
+        else
+            return null
+    }
+    def Map<String,List<Long>>  weeksToMap(){
+        if (this.EventAffectsPredictions )
 
         return [
-        PredictionAffected:true,
-        IG:this.IG==null?'':[StartEndDays:AbstractForecastPredictor.convertDates(this.IG),StartEndWeeks:AbstractForecastPredictor.getOverlappingWeeks(this.IG)],
-        OG1:this.OG1==null?'':[StartEndDays:AbstractForecastPredictor.convertDates(this.OG1),StartEndWeeks:AbstractForecastPredictor.getOverlappingWeeks(this.OG1)],
-        OG2:this.OG2==null?'':[StartEndDays:AbstractForecastPredictor.convertDates(this.OG2),StartEndWeeks:AbstractForecastPredictor.getOverlappingWeeks(this.OG2)]
+                IG:this.IG==null?null:AbstractForecastPredictor.getOverlappingWeeks(this.IG).collect(i ->i.toInstant(ZoneOffset.UTC).toEpochMilli()),
+                OG1:this.OG1==null?null:AbstractForecastPredictor.getOverlappingWeeks(this.OG1).collect(i ->i.toInstant(ZoneOffset.UTC).toEpochMilli()),
+                OG2:this.OG2==null?null:AbstractForecastPredictor.getOverlappingWeeks(this.OG2).collect(i ->i.toInstant(ZoneOffset.UTC).toEpochMilli())
         ]
+        else
+            return null;
     }
 }
 
