@@ -11,6 +11,7 @@
       <module name="kafkaTestcontainers.ksql.test" target="11" />
       <module name="kafkaTestcontainers.main" target="11" />
       <module name="kafkaTestcontainers.test" target="11" />
+      <module name="org.example.vdpEventProcessing" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

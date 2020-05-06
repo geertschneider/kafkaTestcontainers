@@ -49,12 +49,12 @@ from STR_INOS_FORECASTRESULT_RAW
 partition by IKLKey;
 
 
-create stream STR_INOS_FORECASTRESULT_WEEKS_PIVOT with(VALUE_FORMAT='JSON')
+create stream STR_INOS_FORECASTRESULT_WEEKS_PIVOT with(VALUE_FORMAT='JSON',KAFKA_TOPIC='OUT_SLPLANNING_FORECASTINGBYWEEK',partitions=6)
 as
 select
  IKLKey, eventIdentifier,trajectID,IKL,eventName,eventTime,
  'Inschattingsgesprek' as TypeGesprek,'' as TypeInschattingsGesprek,
- explode(overlappingWeeks['IG']) as WeekStart
+ overlappingWeeks['IG'] as WeekStart
 from STR_INOS_FORECASTRESULT_ALL where not overlappingWeeks is null
 partition by IKLKey;
 
@@ -62,7 +62,7 @@ insert into STR_INOS_FORECASTRESULT_WEEKS_PIVOT
 select
  IKLKey, eventIdentifier,trajectID,IKL,eventName,eventTime,
  'Opvolgingsgesprek1' as TypeGesprek,'' as TypeInschattingsGesprek,
- explode(overlappingWeeks['OG1']) as WeekStart
+ overlappingWeeks['OG1'] as WeekStart
 from STR_INOS_FORECASTRESULT_ALL where not overlappingWeeks is null
 partition by IKLKey;
 
@@ -71,6 +71,6 @@ insert into STR_INOS_FORECASTRESULT_WEEKS_PIVOT
 select
  IKLKey, eventIdentifier,trajectID,IKL,eventName,eventTime,
  'Opvolgingsgesprek2' as TypeGesprek,'' as TypeInschattingsGesprek,
- explode(overlappingWeeks['OG2']) as WeekStart
+ overlappingWeeks['OG2'] as WeekStart
 from STR_INOS_FORECASTRESULT_ALL where not overlappingWeeks is null
 partition by IKLKey;
