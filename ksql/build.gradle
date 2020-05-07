@@ -28,7 +28,7 @@ tasks.register("DeployLDV",com.redpillanalytics.gradle.tasks.PipelineExecuteTask
     description="Deploys the inos pipeline"
     pipelinePath = "src/main/pipeline/"
     fromBeginning=true
-    restUrl = 'http://kafka01-mlb1abt.ops.vdab.be:8088'
+    restUrl = 'http://kafka01-mlb1ldv.ops.vdab.be:8088'
 }
 
 

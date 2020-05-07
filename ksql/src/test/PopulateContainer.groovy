@@ -6,7 +6,7 @@ import org.apache.kafka.common.serialization.*
 import groovy.transform.Field
 
 @Field final String TEST_TOPIC="TOPIC_TO_POST"
-@Field final String BOOTSTRAP_SERVER="localhost:9092"
+@Field final String BOOTSTRAP_SERVER="kafka01-mlb1ldv.ops.vdab.be:9092,kafka02-mlb1ldv.ops.vdab.be:9092"
 
 def KafkaProducer<String, String> createKafkaProducer() {
     println("start setting producer properties")
