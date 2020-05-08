@@ -25,7 +25,7 @@ class InschattingEvent{
 def ikl=new Random().nextInt(100000)
     LocalDateTime eventTime
     InschattingEvent(){
-        def shiftDays = new Random().nextInt(150)*-1
+        def shiftDays = new Random().nextInt(40)*-1
         eventTime = LocalDateTime.now().plusDays(shiftDays)
     }
 
