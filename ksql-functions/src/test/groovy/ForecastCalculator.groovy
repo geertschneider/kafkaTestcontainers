@@ -15,7 +15,7 @@ class ForecastCalculator {
 
         LocalDateTime testDate =  new LocalDateTime(new LocalDate(2020,1,1),new LocalTime(17,20,54,0))
         InschattingsGesprekAlsOpdrachtGepland
-        def opgestart = AbstractForecastPredictor.GetInstace("InschattingOpgestart",testDate)
+        def opgestart = AbstractForecastPredictor.GetInstance("InschattingOpgestart",testDate)
 
         println (opgestart.toString())
 
@@ -50,7 +50,7 @@ class ForecastCalculator {
     public void "InschattingsGesprekAlsOpdrachtGepland"(){
 
         LocalDateTime testDate =  new LocalDateTime(new LocalDate(2020,1,1),new LocalTime(17,20,54,0))
-        def opgestart =  AbstractForecastPredictor.GetInstace("InschattingsGesprekAlsOpdrachtGepland",testDate)
+        def opgestart =  AbstractForecastPredictor.GetInstance("InschattingsGesprekAlsOpdrachtGepland",testDate)
 
 
         Assert.assertTrue("check if the affected property is set",opgestart.EventAffectsPredictions)
@@ -74,7 +74,7 @@ class ForecastCalculator {
         LocalDateTime testDate =  new LocalDateTime(new LocalDate(2020,1,1),new LocalTime(17,20,54,0))
 
 
-        def opgestart =  AbstractForecastPredictor.GetInstace("InschattingsGesprekAlsBellijstGepland",testDate)
+        def opgestart =  AbstractForecastPredictor.GetInstance("InschattingsGesprekAlsBellijstGepland",testDate)
 
         println (opgestart.toString())
 
@@ -97,7 +97,7 @@ class ForecastCalculator {
 
         LocalDateTime testDate =  new LocalDateTime(new LocalDate(2020,1,1),new LocalTime(17,20,54,0))
 
-        def opgestart =  AbstractForecastPredictor.GetInstace("InschattingBeeindigd",testDate)
+        def opgestart =  AbstractForecastPredictor.GetInstance("InschattingBeeindigd",testDate)
         println (opgestart.toString())
 
 
@@ -114,7 +114,7 @@ class ForecastCalculator {
 
         LocalDateTime testDate =  new LocalDateTime(new LocalDate(2020,1,1),new LocalTime(17,20,54,0))
 
-        def opgestart =  AbstractForecastPredictor.GetInstace("bla bla bla",testDate)
+        def opgestart =  AbstractForecastPredictor.GetInstance("bla bla bla",testDate)
         Assert.assertFalse (opgestart.EventAffectsPredictions)
     }
 
