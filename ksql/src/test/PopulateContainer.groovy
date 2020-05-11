@@ -6,7 +6,9 @@ import org.apache.kafka.common.serialization.*
 import groovy.transform.Field
 
 @Field final String TEST_TOPIC="TOPIC_TO_POST"
-@Field final String BOOTSTRAP_SERVER="kafka01-mlb1ldv.ops.vdab.be:9092,kafka02-mlb1ldv.ops.vdab.be:9092"
+//@Field final String BOOTSTRAP_SERVER="kafka01-mlb1ldv.ops.vdab.be:9092,kafka02-mlb1ldv.ops.vdab.be:9092"
+@Field final String BOOTSTRAP_SERVER="localhost:9092"
+
 
 def KafkaProducer<String, String> createKafkaProducer() {
     println("start setting producer properties")
@@ -23,7 +25,7 @@ def KafkaProducer<String, String> createKafkaProducer() {
 
 def kafkaProducer = createKafkaProducer()
 //String pathToLoad ="C:\\Code\\kafkaTestcontainers\\ksql\\src\\test\\resources\\afspraken.kafka"
-String pathToLoad ="C:\\Code\\vdpEventProcessing\\ksql\\src\\test\\resources\\inos\\Testtrajectenzonderpauzeversie1.json"
+String pathToLoad ="C:\\Code\\vdpEventProcessing\\ksql\\src\\test\\resources\\inos\\TestStateChanges.json"
 def jsonLines =  new File(pathToLoad).text
 def slurper = new JsonSlurper()
 def json= slurper.parseText(jsonLines)

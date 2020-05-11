@@ -1,20 +1,3 @@
---@DeleteTopic
-CREATE STREAM STR_INOSEVENTS_RAW
-WITH (value_format='JSON') AS
-select
-    extractjsonfield(payload,'$.ikl') as IKLKey,
-    cast(extractjsonfield(payload,'$.ikl') as INT) as IKL,
-    eventIdentifier,
-    eventType,
-    substring(eventType,6) as eventName,
-    extractjsonfield(payload,'$.eersteInschattingId') eersteInschattingId,
-    extractjsonfield(payload,'$.opvolgingId') opvolgingId,
-    eventTime as eventTime,
-    payload as payload
-from STR_INTEGRATIONEVENTS_AVRO
-where rowkey='inos'
-partition by IKLKey;
-
 
 --@DeleteTopic
 create stream STR_INOS_FORECASTRESULT_RAW
@@ -48,6 +31,7 @@ SELECT
 from STR_INOS_FORECASTRESULT_RAW
 partition by IKLKey;
 
+--START WEEKLY FORECAST--
 
 create stream STR_INOS_FORECASTRESULT_WEEKS_PIVOT with(VALUE_FORMAT='JSON',KAFKA_TOPIC='OUT_SLPLANNING_FORECASTINGBYWEEK',partitions=6)
 as
@@ -74,3 +58,34 @@ select
  overlappingWeeks['OG2'] as WeekStart
 from STR_INOS_FORECASTRESULT_ALL where not overlappingWeeks is null
 partition by IKLKey;
+
+--END WEEKLY FORECAST--
+
+--START DAY PREDICTIONS--
+create stream STR_INOS_FORECASTRESULT_DAY_PIVOT with(VALUE_FORMAT='JSON',KAFKA_TOPIC='OUT_SLPLANNING_FORECASTINGBYDAY',partitions=6)
+as
+select
+   IKLKey, eventIdentifier,trajectID,IKL,eventName,eventTime,
+   'Inschattingsgesprek' as TypeGesprek,'' as TypeInschattingsGesprek,
+   STARTENDPERIODS['IG']['BeginPeriod'] as Start
+  from STR_INOS_FORECASTRESULT_ALL where not overlappingWeeks is null
+  partition by IKLKey;
+
+insert into STR_INOS_FORECASTRESULT_DAY_PIVOT
+select
+   IKLKey, eventIdentifier,trajectID,IKL,eventName,eventTime,
+   'Opvolgingsgesprek1' as TypeGesprek,'' as TypeInschattingsGesprek,
+   STARTENDPERIODS['OG1']['BeginPeriod'] as Start
+  from STR_INOS_FORECASTRESULT_ALL where not overlappingWeeks is null
+  partition by IKLKey;
+
+insert into STR_INOS_FORECASTRESULT_DAY_PIVOT
+select
+   IKLKey, eventIdentifier,trajectID,IKL,eventName,eventTime,
+   'Opvolgingsgesprek2' as TypeGesprek,'' as TypeInschattingsGesprek,
+   STARTENDPERIODS['OG2']['BeginPeriod'] as Start
+  from STR_INOS_FORECASTRESULT_ALL where not overlappingWeeks is null
+  partition by IKLKey;
+
+
+--END DAY PREDICTIONS--

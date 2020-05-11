@@ -1,3 +1,4 @@
+--@DeleteTopic
 create stream STR_INTEGRATIONEVENTS_JSON(
     eventIdentifier varchar,
     eventType varchar,
@@ -7,10 +8,12 @@ create stream STR_INTEGRATIONEVENTS_JSON(
     )
 with (kafka_topic = 'Axon.IntegrationEvents', value_format='json');
 
+--@DeleteTopic
 create stream STR_INTEGRATIONEVENTS_AVRO
 WITH (
     kafka_topic='INTEGRATIONEVENTS_AVRO',
-    value_format='AVRO'
+    value_format='AVRO',
+    PARTITIONS=6
     )
 AS
 select
