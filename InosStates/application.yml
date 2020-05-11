@@ -1,0 +1,7 @@
+spring.cloud.stream.bindings:
+  input:
+    destination: Axon.IntegrationEvents
+  output:
+    destination: topic2
+
+  default-binder: kafka
