@@ -4,7 +4,7 @@ import groovy.transform.Field
 
 import java.time.LocalDateTime
 
-@Field final String BOOTSTRAP_SERVER="kafka01-mlb1ldv.ops.vdab.be:9092,kafka02-mlb1ldv.ops.vdab.be:9092,kafka03-mlb1ldv.ops.vdab.be:9092"
+@Field final String BOOTSTRAP_SERVER="localhost:9092"
 
 def KafkaProducer<String, String> createKafkaProducer() {
     println("start setting producer properties")
@@ -44,7 +44,7 @@ def ikl=new Random().nextInt(100000)
 
 
 def kafkaProducer = createKafkaProducer()
-def amountOfEvents = new Random().nextInt(10000)
+def amountOfEvents = new Random().nextInt(100)
 0.upto(amountOfEvents,{
     def ev = new InschattingEvent()
     ProducerRecord<String,String> producerRecord= new ProducerRecord<String, String>( "Axon.IntegrationEvents",'inos', ev.toString())
