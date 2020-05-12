@@ -30,59 +30,7 @@ class InosStateProcessor {
         props.setProperty(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 
 
-        ValueTransformerSupplier<String,  Iterable<String>> valueTransformerSupplier = new ValueTransformerSupplier<String, Iterable<String>>() {
-
-            @Override
-            ValueTransformer<String, Iterable<String>> get() {
-                return new ValueTransformer<String,Iterable< String>>() {
-                    private KeyValueStore<Integer,String> store
-                    def jsonGenerator = new groovy.json.JsonGenerator.Options()
-                            .excludeFieldsByName("defaultEndDate")
-                            .build()
-
-                    public
-                    @Override
-                    void init(ProcessorContext context) {
-                        store =(KeyValueStore<Integer, String>) context.getStateStore("IKL")
-
-                    }
-
-
-                    @Override
-                    Iterable<String> transform(String value) {
-
-                        JsonSlurper slurper=new JsonSlurper()
-                        def fromJSON=slurper.parseText(value)
-                        def transFomredValues =[]
-                        int IKL = fromJSON.IKL
-
-                        def currentInosEvent = new InosEvent(IKL,fromJSON.EVENTIDENTIFIER,fromJSON.EVENTNAME,fromJSON.EVENTTIME,fromJSON.PAYLOAD)
-                        currentInosEvent.setEndDate()
-                        transFomredValues<< jsonGenerator.toJson(currentInosEvent)
-                        def prevEventText = store.get(IKL)
-                        if(prevEventText!=null)
-                        {
-                            def prevJson= slurper.parseText(prevEventText)
-                            def prevInosEvent = new InosEvent(IKL,prevJson.eventIdentifier,prevJson.eventName,prevJson.startDate,prevJson.endDate,prevJson.payload)
-                            prevInosEvent.setEndDate(currentInosEvent.startDate)
-                            transFomredValues<< jsonGenerator.toJson(prevInosEvent)
-                        }
-
-                        store.put(IKL,transFomredValues[0])
-
-                        return transFomredValues
-
-                    }
-
-
-
-                    @Override
-                    void close() {
-
-                    }
-                }
-            }
-        }
+        ValueTransformerSupplier<String,  Iterable<String>> valueTransformerSupplier =getInosTransforer()
 
         StreamsBuilder builder = new StreamsBuilder();
 
@@ -91,7 +39,7 @@ class InosStateProcessor {
 
         KStream<String,String> stream = builder.stream("STR_INOS_NEWEVENTS", Consumed.with(Topology.AutoOffsetReset.EARLIEST));
 
-        stream.flatTransformValues(valueTransformerSupplier,"IKL").to("KafkaOutput");
+        stream.flatTransformValues(valueTransformerSupplier,"IKL").to("OUT_INOS_StateChanges");
 
         Topology topo = builder.build();
         KafkaStreams streams =new KafkaStreams(topo,props);
@@ -103,4 +51,55 @@ class InosStateProcessor {
         })
     }
 
+    static def ValueTransformerSupplier <String,Iterable<String>> getInosTransforer() {
+        new ValueTransformerSupplier<String, Iterable<String>>() {
+
+            @Override
+            ValueTransformer<String, Iterable<String>> get() {
+                return new ValueTransformer<String, Iterable<String>>() {
+                    private KeyValueStore<Integer, String> store
+                    def jsonGenerator = new groovy.json.JsonGenerator.Options()
+                            .excludeFieldsByName("defaultEndDate")
+                            .build()
+
+                    public
+                    @Override
+                    void init(ProcessorContext context) {
+                        store = (KeyValueStore<Integer, String>) context.getStateStore("IKL")
+
+                    }
+
+                    @Override
+                    Iterable<String> transform(String value) {
+
+                        JsonSlurper slurper = new JsonSlurper()
+                        def fromJSON = slurper.parseText(value)
+                        def transFomredValues = []
+                        int IKL = fromJSON.IKL
+
+                        def currentInosEvent = new InosEvent(IKL, fromJSON.EVENTIDENTIFIER, fromJSON.EVENTNAME, fromJSON.EVENTTIME, fromJSON.PAYLOAD)
+                        currentInosEvent.setEndDate()
+                        transFomredValues << jsonGenerator.toJson(currentInosEvent)
+                        def prevEventText = store.get(IKL)
+                        if (prevEventText != null) {
+                            def prevJson = slurper.parseText(prevEventText)
+                            def prevInosEvent = new InosEvent(IKL, prevJson.eventIdentifier, prevJson.eventName, prevJson.startDate, prevJson.endDate, prevJson.payload)
+                            prevInosEvent.setEndDate(currentInosEvent.startDate)
+                            transFomredValues << jsonGenerator.toJson(prevInosEvent)
+                        }
+
+                        store.put(IKL, transFomredValues[0])
+
+                        return transFomredValues
+
+                    }
+                    @Override
+                    void close() {
+
+                    }
+                }
+            }
+
+        }
+    }
 }
