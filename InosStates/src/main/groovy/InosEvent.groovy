@@ -1,5 +1,7 @@
 package be.vdab.vdp.InosStates
 
+
+
 import com.fasterxml.jackson.annotation.JsonIgnore
 
 import java.time.LocalDateTime

@@ -1,6 +1,6 @@
 package be.vdab.vdp.InosStates
 
-
+import be.vdab.vdp.InosStates.InosEvent
 import groovy.json.JsonSlurper
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.KafkaStreams
@@ -24,8 +24,8 @@ class InosStateProcessor {
 
     static void main(String[] args) {
         Properties props = new Properties();
-        props.setProperty(StreamsConfig.APPLICATION_ID_CONFIG, "test-application");
-        props.setProperty(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.setProperty(StreamsConfig.APPLICATION_ID_CONFIG, "inos-processor");
+        props.setProperty(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, 'kafka01-mlb1abt.ops.vdab.be:9092,kafka02-mlb1abt.ops.vdab.be:9092,kafka03-mlb1abt.ops.vdab.be:9092');
         props.setProperty(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         props.setProperty(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 
@@ -37,12 +37,15 @@ class InosStateProcessor {
         StoreBuilder storeBuilder = Stores.keyValueStoreBuilder(Stores.persistentKeyValueStore("IKL"),Serdes.Integer(),Serdes.String());
         builder.addStateStore(storeBuilder);
 
-        KStream<String,String> stream = builder.stream("STR_INOS_NEWEVENTS", Consumed.with(Topology.AutoOffsetReset.EARLIEST));
+        KStream<String,String> stream = builder.stream("STR_INOSEVENTS_RAW", Consumed.with(Topology.AutoOffsetReset.EARLIEST));
 
-        stream.flatTransformValues(valueTransformerSupplier,"IKL").to("OUT_INOS_StateChanges");
+        stream.flatTransformValues(valueTransformerSupplier,"IKL")
+                .to("OUT_INOS_STATECHANGES");
 
         Topology topo = builder.build();
         KafkaStreams streams =new KafkaStreams(topo,props);
+
+streams.cleanUp()
         streams.start()
 
         Runtime.getRuntime().addShutdownHook({
@@ -77,6 +80,9 @@ class InosStateProcessor {
                         def transFomredValues = []
                         int IKL = fromJSON.IKL
 
+                        try{
+
+
                         def currentInosEvent = new InosEvent(IKL, fromJSON.EVENTIDENTIFIER, fromJSON.EVENTNAME, fromJSON.EVENTTIME, fromJSON.PAYLOAD)
                         currentInosEvent.setEndDate()
                         transFomredValues << jsonGenerator.toJson(currentInosEvent)
@@ -89,7 +95,10 @@ class InosStateProcessor {
                         }
 
                         store.put(IKL, transFomredValues[0])
-
+                        }
+                        catch(Exception ex){
+                            println("Failed to process IKL : ${IKL}")
+                        }
                         return transFomredValues
 
                     }
