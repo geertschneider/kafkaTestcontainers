@@ -1,13 +1,13 @@
 [
 {
-  "eventIdentifier":"EventIdentifier2",
+  "eventIdentifier":"EventIdentifier123",
   "eventType":"inos/InschattingOpgestart",
   "revision":"1",
   "timestamp":"2020-01-01T00:00:00.000Z",
   "payload": {"omschrijving":"Zelfredzaam registreren nog niet mogelijk","datumSinds":"2020-01-01","ikl":2 ,"eersteInschattingId":"eersteInschattingId2"}
 },
 {
-"eventIdentifier":"EventIdentifier3",
+"eventIdentifier":"EventIdentifier1234",
 "eventType":"inos/InschattingGepauzeerd",
 "revision":"1",
 "timestamp":"2020-01-04T00:00:00.000Z",

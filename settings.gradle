@@ -1,4 +1,5 @@
 rootProject.name = 'vdpEventProcessing'
 include 'ksql'
 include 'ksql-functions'
+include 'InosStates'
 
