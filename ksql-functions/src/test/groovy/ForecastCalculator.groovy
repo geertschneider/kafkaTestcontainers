@@ -46,7 +46,7 @@ class ForecastCalculator {
         Assert.assertEquals("monday 04 MAY expected" , new LocalDateTime( LocalDate.of(2020,5,11),LocalTime.of(0,0,0)),weekStarts[1])
     }
 
-@Test
+    @Test
     public void "InschattingsGesprekAlsOpdrachtGepland"(){
 
         LocalDateTime testDate =  new LocalDateTime(new LocalDate(2020,1,1),new LocalTime(17,20,54,0))
