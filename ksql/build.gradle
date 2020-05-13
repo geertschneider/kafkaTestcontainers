@@ -1,6 +1,6 @@
 plugins {
     id 'groovy'
-    id "com.redpillanalytics.gradle-confluent" version "1.1.21"
+    id "com.redpillanalytics.gradle-confluent" //version "1.1.21"
     id "maven-publish"
 }
 
@@ -45,7 +45,6 @@ tasks.register("INOS_LDV",com.redpillanalytics.gradle.tasks.PipelineExecuteTask)
 dependencies {
 
     compile 'org.codehaus.groovy:groovy-all:3.0.3'
-
 
     compile group: 'org.apache.kafka', name: 'kafka-clients', version: '2.5.0'
     compile group:'org.apache.kafka', name: 'kafka_2.13', version: '2.5.0'

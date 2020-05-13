@@ -1,15 +1,13 @@
 ---
-version: '2'
+version: "2"
 services:
   zookeeper:
-    container_name: zookeeper
     image: confluentinc/cp-zookeeper:5.5.0
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
   kafka:
-    container_name: kafka
     image: confluentinc/cp-enterprise-kafka:5.5.0
     depends_on:
       - zookeeper
@@ -17,7 +15,7 @@ services:
     # Use kafka:29092 for connections internal on the docker network
     # See https://rmoff.net/2018/08/02/kafka-listeners-explained/ for details
     ports:
-      - 9092:9092
+     - 9092:9092
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -31,11 +29,10 @@ services:
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka:29092
       CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zookeeper:2181
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
-      CONFLUENT_METRICS_ENABLE: 'true'
-      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+      CONFLUENT_METRICS_ENABLE: "true"
+      CONFLUENT_SUPPORT_CUSTOMER_ID: "anonymous"
 
   schema-registry:
-    container_name: schema-registry
     image: confluentinc/cp-schema-registry:5.5.0
     depends_on:
       - zookeeper
@@ -47,7 +44,6 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper:2181
 
   ksql-server:
-    container_name: ksql-server
     image: confluentinc/cp-ksql-server
     ports:
       - 8088:8088
@@ -61,63 +57,3 @@ services:
       KSQL_KSQL_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       KSQL_KSQL_SERVICE_ID: kafka-examples
       KSQL_KSQL_EXTENSION_DIR: /etc/ksql-server/ext
-
-  ksql-cli:
-    container_name: ksql-cli
-    image: confluentinc/cp-ksql-cli
-    depends_on:
-      - ksql-server
-    entrypoint: /bin/sh
-    tty: true
-    volumes:
-      - $PWD/ksql/ksql-clickstream-demo/demo:/usr/share/doc/clickstream
-
-  kafkacat:
-    container_name: kafkacat
-    image: confluentinc/cp-kafkacat:latest
-    depends_on:
-      - kafka
-    entrypoint: /bin/sh
-    tty: true
-
-  nifi:
-    container_name: nifi
-    image: apache/nifi:1.9.2
-    depends_on:
-      - kafka
-      - zookeeper
-    ports :
-      - 8080:8080
-    environment:
-      - NIFI_ZK_CONNECT_STRING=zookeeper:2181
-
-  kudu-master:
-    container_name: kudu-master
-    image: apache/kudu
-    ports :
-      - 8051:8051
-      - 7051:7051
-    command: ["master"]
-
-  kudu-tserver:
-    container_name: kudu-tserver
-    image: apache/kudu:latest
-    depends_on:
-      - kudu-master
-    command: ["tserver"]
-    environment:
-      - KUDU_MASTERS=kudu-master
-
-  impala:
-    container_name: impala
-    image: apache/kudu:impala-latest
-
-    ports:
-    - 21050:21050
-    - 25000:25000
-    - 25010:25010
-    - 25020:25020
-    environment:
-      - KUDU_MASTERS=kudu-master
-    command: ["impala"]
-
